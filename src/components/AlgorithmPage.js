@@ -1,8 +1,9 @@
 import React from 'react';
+import Grid from './Grid';
 
 const AlgorithmPage = () => (
-	<div>
-		AlgorithmPage
+	<div className="grid-container">
+		<Grid rows={2} columns={3} />		
 	</div>
 );
 

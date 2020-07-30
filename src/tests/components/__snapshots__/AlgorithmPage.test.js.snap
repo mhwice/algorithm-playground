@@ -1,7 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should render AlgorithmPage 1`] = `
-<div>
-  AlgorithmPage
+<div
+  className="grid-container"
+>
+  <Grid
+    columns={3}
+    rows={2}
+  />
 </div>
 `;
