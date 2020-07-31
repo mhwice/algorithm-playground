@@ -1,0 +1,36 @@
+{
+  "extends": [
+    "airbnb",
+    "plugin:jest/recommended",
+    "prettier",
+    "prettier/react"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      {
+        "trailingComma": "none",
+        "printWidth": 100,
+        "useTabs": true
+      }
+    ],
+    "react/no-array-index-key": 0,
+    "react/jsx-filename-extension": 0
+  },
+  "plugins": [
+    "html",
+    "import",
+    "jest",
+    "react",
+    "react-hooks",
+    "prettier"
+  ]
+}
