@@ -3,21 +3,11 @@
 exports[`should render Grid correctly 1`] = `
 <div
   className="grid"
->
-  <div
-    className="row"
-    key="row0"
-  />
-</div>
+/>
 `;
 
 exports[`should render Grid correctly with props 1`] = `
 <div
   className="grid"
->
-  <div
-    className="row"
-    key="row0"
-  />
-</div>
+/>
 `;

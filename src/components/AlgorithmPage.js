@@ -1,9 +1,9 @@
 import React from "react";
-import Grid from "./Grid";
+import ShortestPathVisualizer from "./ShortestPathVisualizer";
 
 const AlgorithmPage = () => (
-	<div className="grid-container">
-		<Grid rows={2} columns={3} />
+	<div className="shortest-path-visualizer-container">
+		<ShortestPathVisualizer />
 	</div>
 );
 

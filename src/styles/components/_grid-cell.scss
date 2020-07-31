@@ -5,3 +5,11 @@
   vertical-align: middle;
   line-height: $cell-size;
 }
+
+.grid-cell-start {
+  background-color: green;
+}
+
+.grid-cell-end {
+  background-color: red;
+}

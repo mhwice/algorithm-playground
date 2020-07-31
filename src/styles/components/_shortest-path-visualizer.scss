@@ -1,0 +1,13 @@
+.run-button {
+  margin: 20px auto;
+  display: block;
+  border-radius: 50px;
+  border: 1px solid black;
+  background: none;
+  padding: 10px 20px;
+  outline: none;
+}
+
+.run-button:active {
+  background-color: white;
+}

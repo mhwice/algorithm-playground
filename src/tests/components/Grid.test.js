@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import Grid, { createMatrix } from "../../components/Grid";
+import Grid, { createGrid } from "../../components/Grid";
 
 test("should render Grid correctly", () => {
 	const wrapper = shallow(<Grid />);
@@ -12,10 +12,18 @@ test("should render Grid correctly with props", () => {
 	expect(wrapper).toMatchSnapshot();
 });
 
-test("should generate matrix correctly with input", () => {
-	const matrix = createMatrix(2, 3);
-	expect(matrix).toEqual([
-		[0, 1, 2],
-		[3, 4, 5]
+test("should generate grid correctly with input", () => {
+	const grid = createGrid(2, 3);
+	expect(grid).toEqual([
+		[
+			{ isStart: true, isEnd: false },
+			{ isStart: false, isEnd: false },
+			{ isStart: false, isEnd: false }
+		],
+		[
+			{ isStart: false, isEnd: false },
+			{ isStart: false, isEnd: false },
+			{ isStart: false, isEnd: false }
+		]
 	]);
 });

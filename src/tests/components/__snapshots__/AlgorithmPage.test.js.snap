@@ -1,12 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should render AlgorithmPage 1`] = `
+exports[`should render AlgorithmPage correctly 1`] = `
 <div
-  className="grid-container"
+  className="shortest-path-visualizer-container"
 >
-  <Grid
-    columns={3}
-    rows={2}
-  />
+  <ShortestPathVisualizer />
 </div>
 `;
