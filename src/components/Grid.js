@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import GridCell from "./GridCell";
+import Node from "./Node";
+import GridContext from "../context/grid-context";
 
 // ! Temporary values for the coordinates of the start and end nodes
 const startX = 0;
 const startY = 0;
-const endX = 6;
-const endY = 6;
+const endX = 2;
+const endY = 2;
 
 const createGrid = (rows, columns) => {
 	if (rows < 1 || columns < 1) {
@@ -17,8 +18,8 @@ const createGrid = (rows, columns) => {
 		const row = [];
 		for (let j = 0; j < columns; j += 1) {
 			row.push({
-				isStart: i === startX && j === startY,
-				isEnd: i === endX && j === endY
+				row: i,
+				column: j
 			});
 		}
 		grid.push(row);
@@ -27,7 +28,7 @@ const createGrid = (rows, columns) => {
 };
 
 const Grid = ({ rows, columns }) => {
-	const [grid, setGrid] = useState([]);
+	const { grid, setGrid } = useContext(GridContext);
 
 	useEffect(() => {
 		setGrid(createGrid(rows, columns));
@@ -37,13 +38,15 @@ const Grid = ({ rows, columns }) => {
 		<div className="grid">
 			{grid.map((row, rowIndex) => {
 				return (
-					// It is safe to use the index as a key here since the rows are static and will never change
-					<div className="row" key={`row${rowIndex}`}>
-						{row.map((column, columnIndex) => (
-							<GridCell
-								isStart={column.isStart}
-								isEnd={column.isEnd}
-								key={`(${rowIndex}, ${columnIndex})`}
+					<div className="row" key={rowIndex}>
+						{row.map((node) => (
+							<Node
+								row={node.row}
+								column={node.column}
+								isStart={node.row === startX && node.column === startY}
+								isEnd={node.row === endX && node.column === endY}
+								isVisited={node.visited}
+								key={`(${node.row}, ${node.column})`}
 							/>
 						))}
 					</div>

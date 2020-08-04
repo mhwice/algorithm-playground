@@ -1,4 +1,4 @@
-.grid-cell {
+.node {
   background-color: white;
   width: $cell-size;
   text-align: center;
@@ -6,10 +6,14 @@
   line-height: $cell-size;
 }
 
-.grid-cell-start {
+.node-start {
   background-color: green;
 }
 
-.grid-cell-end {
+.node-end {
   background-color: red;
+}
+
+.node-visited {
+  background-color: yellow;
 }

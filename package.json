@@ -9,7 +9,9 @@
     "dev-server": "webpack-dev-server",
     "test": "cross-env NODE_ENV=test jest --config=jest.config.json",
     "start": "node server/server.js",
-    "heroku-postbuild": "npm run build:prod"
+    "heroku-postbuild": "npm run build:prod",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix"
   },
   "author": "",
   "license": "ISC",
@@ -38,6 +40,7 @@
     "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
+    "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.2",
     "dotenv": "^8.2.0",
     "enzyme": "^3.11.0",
