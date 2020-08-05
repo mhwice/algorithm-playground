@@ -21,6 +21,13 @@ class PathTable {
 		return path;
 	};
 
+	hasVisited = (node) => {
+		if (Object.values(this.table).indexOf(node) > -1) {
+			return true;
+		}
+		return false;
+	};
+
 	toString = () => {
 		console.log("pathTable", JSON.parse(JSON.stringify(this.table)));
 	};

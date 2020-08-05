@@ -4,13 +4,25 @@ Format:
 
 edges = {
 	A: [
-		{ node: B, cost: 2 },
-		{ node: D, cost: 3 }
+		{ node: B },
+		{ node: D }
 	],
 	B: [
-		{ node: A, cost: 2 },
-		{ node: C, cost: 7 },
-		{ node: E, cost: 5 }
+		{ node: A },
+		{ node: C },
+		{ node: E }
+	]
+}
+
+edges = {
+	A: [
+		B,
+		D
+	],
+	B: [
+		A,
+		C,
+		E
 	]
 }
 
@@ -21,30 +33,22 @@ graph.addEdge("A", "B", 3);
 graph.addEdge("A", D), 2;
 
 */
-class Graph {
+class UnweightedGraph {
 	constructor() {
 		this.adjacencyList = {};
 		this.nodes = [];
 	}
 
-	addEdge = (node, neighbor, cost) => {
+	addEdge = (node, neighbor) => {
 		if (Object.prototype.hasOwnProperty.call(this.adjacencyList, node)) {
-			this.adjacencyList[node].push({
-				node: neighbor,
-				cost
-			});
+			this.adjacencyList[node].push({ node: neighbor });
 		} else {
 			this.nodes.push(node);
-			this.adjacencyList[node] = [
-				{
-					node: neighbor,
-					cost
-				}
-			];
+			this.adjacencyList[node] = [{ node: neighbor }];
 		}
 	};
 
 	getNeighborsOf = (node) => this.adjacencyList[node];
 }
 
-export { Graph as default };
+export { UnweightedGraph as default };

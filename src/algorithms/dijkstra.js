@@ -1,14 +1,12 @@
-import Graph from "./utils/Graph";
+import WeightedGraph from "./utils/WeightedGraph";
 import PriorityQueue from "./utils/PriorityQueue";
 import CostTable from "./utils/CostTable";
 import PathTable from "./utils/PathTable";
 
-// const nodeObjectToString = (node) => `(${node.x}, ${node.y})`;
-
 const nodeObjectToString = (node) => JSON.stringify(node);
 
 const createExampleGraph = () => {
-	const graph = new Graph();
+	const graph = new WeightedGraph();
 	graph.addEdge("(0, 0)", "(0, 1)", 2);
 	graph.addEdge("(0, 0)", "(1, 0)", 3);
 	graph.addEdge("(0, 1)", "(0, 0)", 2);
@@ -37,7 +35,7 @@ const createExampleGraph = () => {
 };
 
 const createExampleGraph2 = () => {
-	const graph = new Graph();
+	const graph = new WeightedGraph();
 	graph.addEdge("(0, 0)", "(0, 1)", 1);
 	graph.addEdge("(0, 0)", "(1, 0)", 20);
 	graph.addEdge("(0, 1)", "(0, 0)", 1);
@@ -66,7 +64,7 @@ const createExampleGraph2 = () => {
 };
 
 const mapGridToGraph = (grid) => {
-	const graph = new Graph();
+	const graph = new WeightedGraph();
 	for (let i = 0; i < grid.length; i += 1) {
 		for (let j = 0; j < grid[0].length; j += 1) {
 			const node = nodeObjectToString({ x: i, y: j });
