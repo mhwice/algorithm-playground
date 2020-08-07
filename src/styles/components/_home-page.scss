@@ -1,0 +1,92 @@
+.bg {
+  height: 100vh;
+  background-image: url("../../public/images/wave.png");
+  background-size: cover;
+  background-position: top;
+  position: relative;
+}
+
+.link {
+  color: #777777;
+  text-decoration: none;
+  display: inline-block;
+  background-color: #ffffff;
+  padding: 10px;
+  margin: 0 5px;
+  border-radius: 10px;
+}
+
+.link:hover {
+  color: #4264FB;
+  background-color: #ECECEC;
+}
+
+.navigation-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 30px 10%;  
+}
+
+.title-box {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.title {
+  color: #090E24;
+  display: block;
+  font-size: 70px;
+  animation-name: slideInFromRight;
+  animation-duration: 3s;
+  animation-timing-function: ease-in-out;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Big screens */
+@media (min-width: 1200px) { 
+  .title {
+    font-size: 4em;
+  }
+} 
+ 
+/* Landscape tablets and medium desktops */ 
+@media (min-width: 992px) and (max-width: 1199px) { 
+  .title {
+    font-size: 3em;
+  }
+} 
+ 
+/* Portrait tablets and small desktops */ 
+@media (min-width: 768px) and (max-width: 991px) { 
+  .title {
+    font-size: 2.5em;
+  }
+} 
+ 
+/* Landscape phones and portrait tablets */ 
+@media (max-width: 767px) { 
+  .title {
+    font-size: 2em;
+  }
+} 
+ 
+/* Portrait phones and smaller */ 
+@media (max-width: 480px) { 
+  .title {
+    font-size: 1em;
+  }
+} 

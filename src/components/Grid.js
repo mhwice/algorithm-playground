@@ -3,12 +3,6 @@ import PropTypes from "prop-types";
 import Node from "./Node";
 import GridContext from "../context/grid-context";
 
-// ! Temporary values for the coordinates of the start and end nodes
-const startX = 0;
-const startY = 0;
-const endX = 2;
-const endY = 2;
-
 const createGrid = (rows, columns) => {
 	if (rows < 1 || columns < 1) {
 		return [[0]];
@@ -43,8 +37,8 @@ const Grid = ({ rows, columns }) => {
 							<Node
 								row={node.row}
 								column={node.column}
-								isStart={node.row === startX && node.column === startY}
-								isEnd={node.row === endX && node.column === endY}
+								isStart={node.row === 0 && node.column === 0}
+								isEnd={node.row === rows - 1 && node.column === columns - 1}
 								isVisited={node.visited}
 								key={`(${node.row}, ${node.column})`}
 							/>

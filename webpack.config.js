@@ -4,8 +4,6 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = (env) => {
 	const isProduction = env === "production";
 
-	// "./src/app.js"
-	// "./src/playground/playground.js"
 	return {
 		entry: ["./src/app.js"],
 		output: {
@@ -20,9 +18,23 @@ module.exports = (env) => {
 					exclude: /node_modules/
 				},
 				{
+					test: /\.png$/,
+					use: [
+						{
+							loader: "file-loader",
+							options: {
+								name: "[name].[ext]",
+								useRelativePaths: true
+							}
+						}
+					]
+				},
+				{
 					test: /\.s?css$/,
 					use: [
-						MiniCssExtractPlugin.loader,
+						{
+							loader: MiniCssExtractPlugin.loader
+						},
 						{
 							loader: "css-loader",
 							options: {

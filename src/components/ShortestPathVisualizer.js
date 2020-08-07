@@ -6,6 +6,9 @@ import GridContext from "../context/grid-context";
 const ShortestPathVisualizer = () => {
 	const [grid, setGrid] = useState([]);
 
+	const numRows = 3;
+	const numColumns = 3;
+
 	const animatePath = (path) => {
 		const newGrid = grid.map((arr) => {
 			return arr.slice();
@@ -19,7 +22,7 @@ const ShortestPathVisualizer = () => {
 
 	const getShortestPath = () => {
 		const startNode = { x: 0, y: 0 };
-		const endNode = { x: 2, y: 2 };
+		const endNode = { x: numRows - 1, y: numColumns - 1 };
 		const { path } = runAlgorithm("dfs", grid, startNode, endNode);
 		animatePath(path);
 	};
@@ -29,7 +32,7 @@ const ShortestPathVisualizer = () => {
 			<button className="run-button" onClick={getShortestPath} type="button">
 				Run Algorithm
 			</button>
-			<Grid rows={3} columns={3} />
+			<Grid rows={numRows} columns={numColumns} />
 		</GridContext.Provider>
 	);
 };

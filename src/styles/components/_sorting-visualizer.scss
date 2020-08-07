@@ -1,0 +1,12 @@
+.bar-container {
+  display: inline-grid;
+  grid-template-rows: 20px;
+  grid-auto-flow: column;
+  grid-gap: 5px;
+}
+
+.bar {
+  width: 50px;
+  height: 50px;
+  background: lightblue;
+}
