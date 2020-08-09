@@ -1,12 +1,12 @@
 import dijkstra from "./dijkstra";
 import depthFirstSearch from "./depth-first-search";
 
-const runAlgorithm = (algorithm, grid, start, end) => {
+const runAlgorithm = (algorithm, graph, startNode, endNode) => {
 	switch (algorithm) {
 		case "dijkstra":
-			return dijkstra(grid, start, end);
+			return dijkstra(graph, startNode, endNode);
 		case "dfs":
-			return depthFirstSearch(grid, start, end);
+			return depthFirstSearch(graph, startNode, endNode);
 		default:
 			return [];
 	}

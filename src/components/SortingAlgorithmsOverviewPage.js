@@ -1,6 +1,6 @@
 import React from "react";
 
-const SortingAlgorithmPage = () => (
+const SortingAlgorithmsOverviewPage = () => (
 	<>
 		<h2>Sorting Algorithms Overview</h2>
 		<p>Sorting algorithms are used to sort a list of values</p>
@@ -12,4 +12,4 @@ const SortingAlgorithmPage = () => (
 	</>
 );
 
-export default SortingAlgorithmPage;
+export default SortingAlgorithmsOverviewPage;

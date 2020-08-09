@@ -14,7 +14,9 @@ const GraphAlgorithmsPage = () => (
 				<Link to="/graph-algorithms/dijkstra">Dijkstras Algorithm • Weighted • Undirected</Link>
 			</li>
 			<li>
-				<Link to="/graph-algorithms/dfs">Depth First Search • Unweighted • Undirected</Link>
+				<Link to="/graph-algorithms/depth-first-search">
+					Depth First Search • Unweighted • Undirected
+				</Link>
 			</li>
 			<li>
 				<Link to="/graph-algorithms/bfs">Breadth First Search • Unweighted • Undirected</Link>

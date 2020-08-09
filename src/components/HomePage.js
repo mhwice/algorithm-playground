@@ -16,7 +16,8 @@ const HomePage = () => {
 				</Link>
 			</div>
 			<div className="title-box">
-				<h1 className="title">Data Structures & Algorithms</h1>
+				<h1 className="title">The Algorithm Playground</h1>
+				<p>A place to visualize and interact with data structures and algorithms</p>
 			</div>
 		</div>
 	);

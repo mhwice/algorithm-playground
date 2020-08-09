@@ -37,11 +37,11 @@
 }
 
 .title {
-  color: #090E24;
+  color: $primary-text;
   display: block;
   font-size: 70px;
   animation-name: slideInFromRight;
-  animation-duration: 3s;
+  animation-duration: 1.5s;
   animation-timing-function: ease-in-out;
 }
 

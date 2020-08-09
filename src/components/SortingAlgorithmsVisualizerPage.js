@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import mergeSort from "../algorithms/merge-sort";
 import mergeSortEfficient from "../algorithms/merge-sort-efficient";
 
-const SortingVisualizer = () => {
+const SortingAlgorithmsVisualizerPage = () => {
 	const getRandomNumber = (min = 1, max = 100) => Math.floor(Math.random() * (max - min + 1) + min);
 
 	const generateRandomArray = () => {
@@ -55,4 +55,4 @@ const SortingVisualizer = () => {
 	);
 };
 
-export { SortingVisualizer as default };
+export { SortingAlgorithmsVisualizerPage as default };

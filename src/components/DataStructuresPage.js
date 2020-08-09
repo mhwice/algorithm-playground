@@ -1,9 +1,6 @@
 import React from "react";
 
-const DataStructuresPage = () => (
-	<>
-		<h2>Data Structures Overview</h2>
-	</>
-);
-
+const DataStructuresPage = () => {
+	return <h1>Data Structures Overview</h1>;
+};
 export default DataStructuresPage;

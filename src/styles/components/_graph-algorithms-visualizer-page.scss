@@ -1,0 +1,33 @@
+.page {
+  width: 100vw;
+  height: 100vh;
+  background-color: tan;
+}
+
+.run-button {
+  margin: 20px auto;
+  display: block;
+  border-radius: 50px;
+  border: 1px solid black;
+  background: none;
+  padding: 10px 20px;
+  outline: none;
+}
+
+.run-button:active {
+  background-color: rgb(143, 128, 128);
+}
+
+.visualizations {
+  width: 100vw;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.button-container {
+  width: 300px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}

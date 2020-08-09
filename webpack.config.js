@@ -4,6 +4,8 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = (env) => {
 	const isProduction = env === "production";
 
+	// ["./src/playground/Vertex.js"],
+	// ["./src/app.js"],
 	return {
 		entry: ["./src/app.js"],
 		output: {
