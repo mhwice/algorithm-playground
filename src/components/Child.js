@@ -1,14 +1,37 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { dijkstraProcess } from "../algorithms/dijkstra";
+import Graph from "./Graph";
+import generateRandomGraph from "../utils/generateRandomGraph";
 
-const Child = ({ count }) => <h1>The count is: {count}</h1>;
+const ROWS = 30;
+const COLUMNS = 30;
 
-Child.defaultProps = {
-	count: 0
-};
+function* process() {
+	for (let i = 0; i < 10; i += 1) {
+		yield i;
+	}
+}
 
-Child.propTypes = {
-	count: PropTypes.number
+const Child = () => {
+	const initialGraph = () => generateRandomGraph(ROWS, COLUMNS);
+	const [graph] = useState(initialGraph);
+	const initialAlgorithmResults = () => dijkstraProcess(graph, `(0, 0)`, `(${ROWS - 1}, ${COLUMNS - 1})`);
+	const [algorithmGenerator] = useState(initialAlgorithmResults);
+	const [path] = useState([]);
+
+	const forward = () => {
+		const algorithmState = algorithmGenerator.next();
+		console.log("algorithmState", algorithmState);
+	};
+
+	return (
+		<div className="page">
+			<button className="run-button" onClick={forward} type="button">
+				{"->"}
+			</button>
+			<Graph rows={ROWS} graph={graph} path={path} />
+		</div>
+	);
 };
 
 export default Child;

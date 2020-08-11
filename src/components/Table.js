@@ -1,13 +1,18 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const Table = ({ titles, data }) => {
+const Table = ({ title, headings, data }) => {
 	return (
 		<table>
 			<thead>
 				<tr>
-					{titles.map((title, titleIndex) => (
-						<th key={titleIndex}>{title}</th>
+					<th className="table-title" colSpan={headings.length}>
+						{title}
+					</th>
+				</tr>
+				<tr>
+					{headings.map((heading, headingIndex) => (
+						<th key={headingIndex}>{heading}</th>
 					))}
 				</tr>
 			</thead>
@@ -27,12 +32,14 @@ const Table = ({ titles, data }) => {
 };
 
 Table.defaultProps = {
-	titles: [],
+	title: "",
+	headings: [],
 	data: []
 };
 
 Table.propTypes = {
-	titles: PropTypes.arrayOf(PropTypes.string),
+	title: PropTypes.string,
+	headings: PropTypes.arrayOf(PropTypes.string),
 	data: PropTypes.arrayOf(PropTypes.array)
 };
 

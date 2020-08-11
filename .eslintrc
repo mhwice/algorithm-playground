@@ -19,7 +19,7 @@
       "error",
       {
         "trailingComma": "none",
-        "printWidth": 100,
+        "printWidth": 120,
         "useTabs": true
       }
     ],
