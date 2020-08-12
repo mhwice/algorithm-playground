@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CytoscapeComponent from "react-cytoscapejs";
 
-const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNodes }) => {
+const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNodes, clearPath }) => {
 	const [cyRef, setCyRef] = useState({});
 
 	// Adds the visited class to any nodes that have been seen for the first time
@@ -37,11 +37,11 @@ const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNod
 						}
 					},
 					{
-						duration: 500,
+						duration: 250,
 						queue: true
 					}
 				)
-				.delay(i * 1000);
+				.delay(i * 500);
 			i += 1;
 		});
 	}, [path]);
@@ -60,6 +60,19 @@ const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNod
 
 		stopAnimations();
 	}, [clearGraph]);
+
+	useEffect(() => {
+		const erasePath = () => {
+			if (clearPath.length > 0) {
+				cyRef.nodes().stop(true);
+				cyRef.edges().stop(true);
+				cyRef.nodes().removeStyle();
+				cyRef.edges().removeStyle();
+			}
+		};
+
+		erasePath();
+	}, [clearPath]);
 
 	const style = [
 		{
@@ -151,7 +164,8 @@ Graph.defaultProps = {
 	path: [],
 	clearGraph: [],
 	newlyVisited: [],
-	clearNodes: []
+	clearNodes: [],
+	clearPath: []
 };
 
 Graph.propTypes = {
@@ -160,7 +174,8 @@ Graph.propTypes = {
 	path: PropTypes.arrayOf(PropTypes.string),
 	clearGraph: PropTypes.arrayOf(PropTypes.string),
 	newlyVisited: PropTypes.arrayOf(PropTypes.string),
-	clearNodes: PropTypes.arrayOf(PropTypes.string)
+	clearNodes: PropTypes.arrayOf(PropTypes.string),
+	clearPath: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default Graph;

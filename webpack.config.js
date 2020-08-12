@@ -4,8 +4,9 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = (env) => {
 	const isProduction = env === "production";
 
+	// ["./src/app.js"],
 	return {
-		entry: ["./src/app.js"],
+		entry: ["./src/playground/arrays.js"],
 		output: {
 			path: path.join(__dirname, "public", "dist"),
 			filename: "bundle.js"

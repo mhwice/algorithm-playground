@@ -1,19 +1,15 @@
 import React, { useState } from "react";
-import { dijkstraProcess } from "../algorithms/dijkstra";
-import generateRandomGraph from "../utils/generateRandomGraph";
-
-const ROWS = 30;
-const COLUMNS = 30;
+import Child from "./Child";
 
 const Parent = () => {
-	const initialGraph = () => generateRandomGraph(ROWS, COLUMNS);
-	const [graph] = useState(initialGraph);
-	const initialAlgorithmResults = () => dijkstraProcess(graph, `(0, 0)`, `(${ROWS - 1}, ${COLUMNS - 1})`);
-	const [generator] = useState(initialAlgorithmResults);
+	const [state, setState] = useState([
+		{ name: "Bob", age: 10 },
+		{ name: "Sue", age: 15 },
+		{ name: "Harry", age: 32 }
+	]);
 
 	const buttonClicked = () => {
-		const current = generator.next();
-		console.log(current);
+		setState((prev) => [prev[0], prev[1], { name: "Harry", age: 333 }]);
 	};
 
 	return (
@@ -21,6 +17,9 @@ const Parent = () => {
 			<button onClick={buttonClicked} type="button">
 				Click me
 			</button>
+			<Child person={state[0]} />
+			<Child person={state[1]} />
+			<Child person={state[2]} />
 		</div>
 	);
 };

@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { dijkstraProcess } from "../algorithms/dijkstra";
 import Graph from "./Graph";
 import Table from "./Table";
 import generateRandomGraph from "../utils/generateRandomGraph";
 import getPathWithEdges from "../utils/getPathWithEdges";
+import historyReducer from "../reducers/historyReducer";
+import futureReducer from "../reducers/futureReducer";
+import visitedNodesReducer from "../reducers/visitedNodesReducer";
+import { objectToArray, arrayOfObjectsToArrayOfArrays } from "../utils/arrayManipulators";
 
 const ROWS = 3;
 const COLUMNS = 3;
 
 const GraphAlgorithmsVisualizerPage = () => {
-	// ------ State -------
-
 	// Graph model
 	const initialGraph = () => generateRandomGraph(ROWS, COLUMNS);
 	const [graph] = useState(initialGraph);
@@ -25,16 +27,24 @@ const GraphAlgorithmsVisualizerPage = () => {
 	// When length > 0 causes the Graph to be cleared
 	const [clearGraph, setClearGraph] = useState([]);
 
-	// Holds the data for the tables
+	// Used to clear the path from the graph if drawn
+	const [clearPath, setClearPath] = useState([]);
+
+	// ! I dont like this!
+	/*
+
+	These ALWAYS hold the current state of the tables data
+	
+	*/
 	const [costTableData, setCostTableData] = useState([]);
 	const [pathTableData, setPathTableData] = useState([]);
 	const [priorityQueueTableData, setPriorityQueueTableData] = useState([]);
 
 	// Determines if 'playing' or 'paused'
-	const [isActive, setIsActive] = useState(false);
+	const [isPlaying, setIsPlaying] = useState(false);
 
 	// A list of all nodes that have been marked as visited
-	const [allVisited, setAllVisited] = useState([]);
+	const [allVisited, dispatchVisitedNodes] = useReducer(visitedNodesReducer, []);
 
 	// A list of nodes that were marked as visited in the last step
 	const [newlyVisited, setNewlyVisited] = useState([]);
@@ -43,179 +53,162 @@ const GraphAlgorithmsVisualizerPage = () => {
 	const [clearNodes, setClearNodes] = useState([]);
 
 	// History
-	const [history, setHistory] = useState([]);
+	const [history, historyDispatch] = useReducer(historyReducer, []);
 
 	// Future
-	const [future, setFuture] = useState([]);
+	const [future, futureDispatch] = useReducer(futureReducer, []);
 
-	// ------- Custom functions -----
+	// ================= Custom Functions ==================
 
-	const formatTable = (tableState) => {
-		const tableKeys = Object.keys(tableState);
-		const tableBody = [];
-		tableKeys.forEach((key) => {
-			tableBody.push([key, tableState[key]]);
-		});
-		return tableBody;
+	const updateNewNodes = (priorityQueueData) => {
+		setNewlyVisited([...priorityQueueData.filter((item) => !allVisited.includes(item[0])).map((item) => item[0])]);
 	};
 
-	const formatYieldedCostTable = (tableState) => formatTable(tableState);
-
-	const formatYieldedPathTable = (tableState) => formatTable(tableState);
-
-	const formatYieldedPriorityQueue = (tableState) => {
-		const newPriorityQueueTableBody = [];
-		tableState.forEach((item) => {
-			newPriorityQueueTableBody.push([item.node, item.priority]);
-		});
-		return newPriorityQueueTableBody;
+	const updateTables = (data) => {
+		setCostTableData(data[0]);
+		setPathTableData(data[1]);
+		setPriorityQueueTableData(data[2]);
 	};
+
+	// ================ Steps =============
 
 	// Takes a single algorithm step
 	const takeStep = () => {
-		// ! we have some future so apply that instead of taking a step
-		if (future.length > 0) {
-			// Get current state
-			const current = future[future.length - 1];
-			// Remove from future
-			setFuture((prev) => prev.splice(0, prev.length - 1));
+		// Get next algorithm state
+		const algorithmState = algorithmGenerator.next();
+		if (!algorithmState.done) {
+			// Format data
+			const { costTable, pathTable, priorityQueue } = algorithmState.value;
+			const formattedPriorityQueueTableData = arrayOfObjectsToArrayOfArrays(priorityQueue);
+			const tableData = [objectToArray(costTable), objectToArray(pathTable), formattedPriorityQueueTableData];
+
 			// Add to history
-			setHistory((prev) => [...prev, current]);
+			historyDispatch({
+				type: "PUSH",
+				historyItem: tableData
+			});
 
 			// Update graph by highlighting items that were just seen for the first time
-			console.log("pq", JSON.stringify(current[2], null, 4));
-			console.log("allVisited", JSON.stringify(allVisited, null, 4));
-			const newItems = [];
-			current[2].forEach((item) => {
-				if (!allVisited.includes(item[0])) {
-					newItems.push(item[0]);
-				}
-			});
-			setNewlyVisited([...newItems]);
+			updateNewNodes(formattedPriorityQueueTableData);
 
 			// Update tables
-			setCostTableData(current[0]);
-			setPathTableData(current[1]);
-			setPriorityQueueTableData(current[2]);
-		} else {
-			const algorithmState = algorithmGenerator.next();
-			if (!algorithmState.done) {
-				const { costTable, pathTable, priorityQueue } = algorithmState.value;
-				setHistory((prev) => {
-					return [
-						...prev,
-						[
-							formatYieldedCostTable(costTable),
-							formatYieldedPathTable(pathTable),
-							formatYieldedPriorityQueue(priorityQueue)
-						]
-					];
-				});
-
-				// Update graph by highlighting items that were just seen for the first time
-				const newItems = [];
-				priorityQueue.forEach((item) => {
-					if (!allVisited.includes(item.node)) {
-						newItems.push(item.node);
-					}
-				});
-				setNewlyVisited([...newItems]);
-
-				// Update tables
-				setCostTableData(formatYieldedCostTable(costTable));
-				setPathTableData(formatYieldedPathTable(pathTable));
-				setPriorityQueueTableData(formatYieldedPriorityQueue(priorityQueue));
-			} else if (algorithmState.value) {
-				// Algorithm is finished -> display shortest path
-				const { shortestPath } = algorithmState.value;
-				if (shortestPath) {
-					setPath(getPathWithEdges(shortestPath));
-				}
+			updateTables(tableData);
+		} else if (algorithmState.value) {
+			// Display path
+			const { shortestPath } = algorithmState.value;
+			if (shortestPath) {
+				setPath(getPathWithEdges(shortestPath));
 			}
 		}
 	};
 
-	// ---- useEffects -----
+	// Move item from future to history and apply changes
+	const redoStep = () => {
+		// Get current state
+		const current = future[future.length - 1];
 
-	// Callback for when newlyVisited is changed -> add newlyVisited nodes to allVisited nodes
-	useEffect(() => {
-		setAllVisited((prev) => [...prev, ...newlyVisited]);
-	}, [newlyVisited]);
+		// Remove from future
+		futureDispatch({ type: "POP" });
 
-	// Callback for when isActive is changed -> if true -> every 1s call takeStep();
-	useEffect(() => {
-		let interval = null;
-		if (isActive) {
-			interval = setInterval(() => {
-				takeStep();
-			}, 1000);
-		} else {
-			clearInterval(interval);
-		}
-		return () => clearInterval(interval);
-	}, [isActive]);
+		// Add to history
+		historyDispatch({ type: "PUSH", historyItem: current });
 
-	// ------- onClick handlers -------
+		// Update graph by highlighting items that were just seen for the first time
+		updateNewNodes(current[2]);
 
-	// onClick handler for reset button - clears the graph and sets all state values back to initial values
-	const reset = () => {
-		setIsActive(false);
-		setClearGraph(allVisited);
-		setClearNodes([]);
-		setAllVisited([]);
-		setCostTableData([]);
-		setPathTableData([]);
-		setPriorityQueueTableData([]);
-		setAlgorithmGenerator(initialAlgorithmResults);
-		setHistory([]);
-		setFuture([]);
+		// Update tables
+		updateTables(current);
 	};
 
-	// onClick handler for back button ->
-	// if history is small -> reset everything, else ->
-	// remove the last item from history
-	const back = () => {
+	// Move item from history to future and apply changes
+	const undoStep = () => {
+		const currentState = history[history.length - 1];
+		const previousState = history[history.length - 2];
+
+		// Update tables to previous state
+		updateTables(previousState);
+
+		// Compute which nodes were visited between the previous state and the current state
+		const currentNodes = currentState[2].map((item) => item[0]);
+		const previousNodes = previousState[2].map((item) => item[0]);
+		const visitedNodes = currentNodes.filter((x) => !previousNodes.includes(x));
+
+		setClearNodes(visitedNodes);
+		dispatchVisitedNodes({ type: "REMOVE_NODES", nodes: visitedNodes });
+		futureDispatch({ type: "PUSH", historyItem: currentState });
+		historyDispatch({ type: "POP" });
+		setClearPath(path);
+	};
+
+	// Resets everything
+	const reset = () => {
+		setIsPlaying(false);
+		setClearGraph(allVisited);
+		setClearNodes([]);
+		setClearPath([]);
+		dispatchVisitedNodes({ type: "RESET" });
+		updateTables([[], [], []]);
+		setAlgorithmGenerator(initialAlgorithmResults);
+		historyDispatch({ type: "RESET" });
+		futureDispatch({ type: "RESET" });
+	};
+
+	// Moves backwards once
+	const moveBackward = () => {
 		if (history.length > 1) {
-			const len = history.length;
-			const current = history[len - 1];
-			const previous = history[len - 2];
-			setCostTableData(previous[0]);
-			setPathTableData(previous[1]);
-			setPriorityQueueTableData(previous[2]);
-			const currentNodes = current[2].map((item) => item[0]);
-			const previousNodes = previous[2].map((item) => item[0]);
-			const difference = currentNodes.filter((x) => !previousNodes.includes(x));
-			setClearNodes(difference);
-			setAllVisited((prev) => prev.filter((x) => !difference.includes(x)));
-			// Add current history to future, then remove it from history
-			setFuture((prev) => [...prev, current]);
-			setHistory((prev) => prev.splice(0, prev.length - 1));
+			undoStep();
 		} else {
 			reset();
 		}
 	};
 
-	// onClick handler for forward button -> takes one algorithm step
-	const forward = () => {
-		takeStep();
+	// Moves forward once
+	const moveForward = () => {
+		if (future.length > 0) {
+			redoStep();
+		} else {
+			takeStep();
+		}
 	};
 
-	// onClick handler for play/pause button -> toggles the value of isActive
-	const toggle = () => {
-		setIsActive(!isActive);
+	// Toggles the value of isPlaying
+	const playPauseToggle = () => {
+		setIsPlaying((prev) => !prev);
 	};
+
+	// ================== useEffect =========================
+
+	// Add newly visited notes to all visited nodes
+	useEffect(() => {
+		dispatchVisitedNodes({ type: "ADD_NODES", nodes: newlyVisited });
+	}, [newlyVisited]);
+
+	// Start/stop playing
+	useEffect(() => {
+		let interval = null;
+		if (isPlaying) {
+			interval = setInterval(() => {
+				moveForward();
+			}, 1000);
+		} else {
+			clearInterval(interval);
+		}
+		return () => clearInterval(interval);
+	}, [isPlaying]);
+
+	// ====================== JSX =====================
 
 	return (
 		<div className="page">
 			<h1>Dijkstra Algorithm</h1>
 			<div className="button-container">
-				<button className="run-button" onClick={back} type="button">
+				<button className="run-button" onClick={moveBackward} type="button">
 					{"<-"}
 				</button>
-				<button className="run-button" onClick={toggle} type="button">
-					{isActive ? "Pause" : "Play"}
+				<button className="run-button" onClick={playPauseToggle} type="button">
+					{isPlaying ? "Pause" : "Play"}
 				</button>
-				<button className="run-button" onClick={forward} type="button">
+				<button className="run-button" onClick={moveForward} type="button">
 					{"->"}
 				</button>
 				<button className="run-button" onClick={reset} type="button">
@@ -233,6 +226,7 @@ const GraphAlgorithmsVisualizerPage = () => {
 					clearGraph={clearGraph}
 					newlyVisited={newlyVisited}
 					clearNodes={clearNodes}
+					clearPath={clearPath}
 				/>
 			</div>
 		</div>
