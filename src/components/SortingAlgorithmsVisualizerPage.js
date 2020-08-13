@@ -23,18 +23,12 @@ const SortingAlgorithmsVisualizerPage = () => {
 		let t0 = performance.now();
 		mergeSort(bars);
 		let t1 = performance.now();
-		console.log(
-			`Call to mergeSort took ${Math.round((t1 - t0 + Number.EPSILON) * 100) / 100} milliseconds.`
-		);
+		console.log(`Call to mergeSort took ${Math.round((t1 - t0 + Number.EPSILON) * 100) / 100} milliseconds.`);
 
 		t0 = performance.now();
 		mergeSortEfficient(bars, new Array(bars.length), 0, bars.length - 1);
 		t1 = performance.now();
-		console.log(
-			`Call to efficient mergeSort took ${
-				Math.round((t1 - t0 + Number.EPSILON) * 100) / 100
-			} milliseconds.`
-		);
+		console.log(`Call to efficient mergeSort took ${Math.round((t1 - t0 + Number.EPSILON) * 100) / 100} milliseconds.`);
 	};
 
 	return (
