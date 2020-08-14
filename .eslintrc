@@ -3,7 +3,8 @@
     "airbnb",
     "plugin:jest/recommended",
     "prettier",
-    "prettier/react"
+    "prettier/react",
+    "plugin:react-hooks/recommended"
   ],
   "parser": "babel-eslint",
   "parserOptions": {
@@ -24,7 +25,8 @@
       }
     ],
     "react/no-array-index-key": 0,
-    "react/jsx-filename-extension": 0
+    "react/jsx-filename-extension": 0,
+    "consistent-return": 0
   },
   "plugins": [
     "html",

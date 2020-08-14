@@ -2,77 +2,51 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CytoscapeComponent from "react-cytoscapejs";
 
-const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNodes, clearPath }) => {
+const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	const [cyRef, setCyRef] = useState({});
 
-	// Adds the visited class to any nodes that have been seen for the first time
+	// Toggles visited status of nodes
 	useEffect(() => {
-		newlyVisited.forEach((node) => {
-			if (!cyRef.$id(node).hasClass("visited")) {
-				cyRef.$id(node).addClass("visited");
-			}
+		visitedNodes.forEach((node) => {
+			cyRef.$id(node).toggleClass("visited");
 		});
-	}, [newlyVisited]);
-
-	useEffect(() => {
-		clearNodes.forEach((node) => {
-			if (cyRef.$id(node).hasClass("visited")) {
-				cyRef.$id(node).removeClass("visited");
-			}
-		});
-	}, [clearNodes]);
+	}, [visitedNodes, cyRef]);
 
 	// Animates the path
 	useEffect(() => {
-		let i = 0;
-		path.forEach((item) => {
-			cyRef
-				.$id(item)
-				.animate(
-					{
-						style: {
-							"background-color": "#61bffc",
-							"line-color": "#61bffc",
-							"target-arrow-color": "#61bffc"
+		if (path.drawPath) {
+			let i = 0;
+			path.path.forEach((item) => {
+				cyRef
+					.$id(item)
+					.animate(
+						{
+							style: {
+								"background-color": "#61bffc",
+								"line-color": "#61bffc",
+								"target-arrow-color": "#61bffc"
+							}
+						},
+						{
+							duration: 250,
+							queue: true,
+							complete() {
+								console.log("Animation complete");
+							}
 						}
-					},
-					{
-						duration: 250,
-						queue: true
-					}
-				)
-				.delay(i * 500);
-			i += 1;
-		});
-	}, [path]);
-
-	// Clears the graph
-	useEffect(() => {
-		const stopAnimations = () => {
-			if (clearGraph.length > 0) {
-				cyRef.nodes().stop(true);
-				cyRef.edges().stop(true);
+					)
+					.delay(i * 500);
+				i += 1;
+			});
+		} else {
+			try {
 				cyRef.nodes().removeStyle();
 				cyRef.edges().removeStyle();
-				cyRef.$(".visited").removeClass("visited");
+			} catch (err) {
+				console.log("no problem");
 			}
-		};
-
-		stopAnimations();
-	}, [clearGraph]);
-
-	useEffect(() => {
-		const erasePath = () => {
-			if (clearPath.length > 0) {
-				cyRef.nodes().stop(true);
-				cyRef.edges().stop(true);
-				cyRef.nodes().removeStyle();
-				cyRef.edges().removeStyle();
-			}
-		};
-
-		erasePath();
-	}, [clearPath]);
+		}
+	}, [path, cyRef]);
 
 	const style = [
 		{
@@ -161,21 +135,17 @@ const Graph = ({ rows, graph: elements, path, clearGraph, newlyVisited, clearNod
 Graph.defaultProps = {
 	rows: 1,
 	graph: [],
-	path: [],
-	clearGraph: [],
-	newlyVisited: [],
-	clearNodes: [],
-	clearPath: []
+	path: { path: [], draw: false },
+	shouldAnimatePath: false,
+	visitedNodes: []
 };
 
 Graph.propTypes = {
 	rows: PropTypes.number,
 	graph: PropTypes.arrayOf(PropTypes.object),
-	path: PropTypes.arrayOf(PropTypes.string),
-	clearGraph: PropTypes.arrayOf(PropTypes.string),
-	newlyVisited: PropTypes.arrayOf(PropTypes.string),
-	clearNodes: PropTypes.arrayOf(PropTypes.string),
-	clearPath: PropTypes.arrayOf(PropTypes.string)
+	path: PropTypes.objectOf(PropTypes.any),
+	shouldAnimatePath: PropTypes.bool,
+	visitedNodes: PropTypes.arrayOf(PropTypes.string)
 };
 
 export default Graph;

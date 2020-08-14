@@ -50,7 +50,12 @@ class PriorityQueue {
 		if (this.isEmpty()) {
 			this.queue.push(newItem);
 		} else {
-			this.insert(newItem, this.queue);
+			const idx = this.queue.findIndex((x) => x.node === newItem.node);
+			if (idx !== -1) {
+				this.queue[idx] = newItem;
+			} else {
+				this.insert(newItem, this.queue);
+			}
 		}
 	};
 

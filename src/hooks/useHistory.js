@@ -1,6 +1,6 @@
-import { useReducer } from "react";
+import { useReducer, useCallback } from "react";
 
-const reducer = (state, action) => {
+const historyReducer = (state, action) => {
 	const { past, present, future } = state;
 	switch (action.type) {
 		case "UNDO": {
@@ -21,9 +21,15 @@ const reducer = (state, action) => {
 			if (action.newPresent === present) {
 				return state;
 			}
+
+			const allNodes = [
+				...present[3],
+				...action.newPresent[2].map((item) => item[0]).filter((item) => !present[3].includes(item))
+			];
+
 			return {
 				past: [...past, present],
-				present: action.newPresent,
+				present: [...action.newPresent, ...allNodes],
 				future: []
 			};
 		}
@@ -40,7 +46,7 @@ const reducer = (state, action) => {
 };
 
 const useHistory = (initialPresent) => {
-	const [state, dispatch] = useReducer(reducer, {
+	const [state, dispatch] = useReducer(historyReducer, {
 		past: [],
 		present: initialPresent,
 		future: []
@@ -49,25 +55,20 @@ const useHistory = (initialPresent) => {
 	const canRedoHistory = state.future.length > 0;
 	const canUndoHistory = state.past.length > 0;
 
-	const redoHistory = () => {
-		if (canRedoHistory) {
-			dispatch({ type: "REDO" });
-		}
-	};
-
-	const undoHistory = () => {
+	const undoHistory = useCallback(() => {
 		if (canUndoHistory) {
 			dispatch({ type: "UNDO" });
 		}
-	};
+	}, [canUndoHistory]);
 
-	const setHistory = (newPresent) => {
-		dispatch({ type: "SET", newPresent });
-	};
+	const redoHistory = useCallback(() => {
+		if (canRedoHistory) {
+			dispatch({ type: "REDO" });
+		}
+	}, [canRedoHistory]);
 
-	const resetHistory = (newPresent) => {
-		dispatch({ type: "RESET", newPresent });
-	};
+	const setHistory = useCallback((newPresent) => dispatch({ type: "SET", newPresent }), []);
+	const resetHistory = useCallback((newPresent) => dispatch({ type: "RESET", newPresent }), []);
 
 	return [state, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }];
 };
