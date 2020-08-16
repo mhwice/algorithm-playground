@@ -64,10 +64,13 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 		{
 			selector: "node",
 			style: {
-				"background-color": "pink",
+				"background-color": "white",
 				label: "data(id)",
 				"text-valign": "top",
-				"text-halign": "left"
+				"text-halign": "left",
+				"border-color": "#A1A1A1",
+				"border-width": 5,
+				"border-opacity": 1
 			}
 		},
 		{
@@ -75,15 +78,16 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			style: {
 				width: 3,
 				label: "data(weight)",
-				"line-color": "#ccc",
-				"curve-style": "bezier",
-				"target-arrow-shape": "triangle"
+				"line-color": "#A1A1A1",
+				"curve-style": "unbundled-bezier",
+				"target-arrow-shape": "triangle",
+				"target-arrow-color": "#A1A1A1"
 			}
 		},
 		{
 			selector: ".visited",
 			style: {
-				"background-color": "blue",
+				"background-color": "#D596FF",
 				"line-color": "blue",
 				"target-arrow-color": "blue",
 				"transition-property": "background-color, line-color, target-arrow-color",
@@ -111,6 +115,10 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 		name: "grid",
 		rows
 	};
+
+	// const layout = {
+	// 	name: "circle"
+	// };
 
 	const cyStyle = {
 		height: "100%",

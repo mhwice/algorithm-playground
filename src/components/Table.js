@@ -5,11 +5,11 @@ const Table = ({ title, headings, data }) => {
 	return (
 		<table>
 			<thead>
-				<tr>
+				{/* <tr>
 					<th className="table-title" colSpan={headings.length}>
 						{title}
 					</th>
-				</tr>
+				</tr> */}
 				<tr>
 					{headings.map((heading, headingIndex) => (
 						<th key={headingIndex}>{heading}</th>

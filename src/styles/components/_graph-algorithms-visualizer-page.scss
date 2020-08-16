@@ -1,32 +1,41 @@
-.page {
-  width: 100vw;
-  height: 100vh;
-  background-color: darkgrey;
-}
-
-.run-button {
+.media-button {
   margin: 20px auto;
   display: block;
   border-radius: 50px;
   border: 1px solid black;
-  background: none;
+  background: snow;
   padding: 10px 20px;
   outline: none;
 }
 
-.run-button:active {
+.media-button:active {
   background-color: rgb(143, 128, 128);
 }
 
-.visualizations {
+.media-button-container {
+  background-color: #ECECEC;
+  width: 500px;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  border: 1px solid black;
+  border-radius: 10px;  
+  margin: 20px auto;
+}
+
+.window-container {
   width: 100vw;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
 }
 
-.button-container {
-  width: 300px;
+.window {
+  width: 45vw;
+  height: 750px;
+  background-color: #ECECEC;
+  border: 1px solid black;
+  border-radius: 10px;
   display: flex;
   justify-content: space-evenly;
   align-items: center;

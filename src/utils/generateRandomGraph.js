@@ -11,8 +11,7 @@ const generateRandomGraph = (rows, columns) => {
 					id: nodeId,
 					label: nodeId,
 					isStart: i === 0 && j === 0,
-					isEnd: i === rows - 1 && j === columns - 1,
-					isVisited: false
+					isEnd: i === rows - 1 && j === columns - 1
 				}
 			};
 			graph.push(node);
