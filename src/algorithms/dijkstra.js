@@ -1,5 +1,5 @@
 import { node } from "prop-types";
-import WeightedGraph from "./utils/WeightedGraph";
+import WeightedGraph from "./utils/WeightedDirectedGraph";
 import PriorityQueue from "./utils/PriorityQueue";
 import CostTable from "./utils/CostTable";
 import PathTable from "./utils/PathTable";

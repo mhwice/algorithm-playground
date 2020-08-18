@@ -1,5 +1,5 @@
-import dijkstra from "./dijkstra";
-import depthFirstSearch from "./depth-first-search";
+import dijkstra, { dijkstraProcess } from "./dijkstra";
+import depthFirstSearch, { depthFirstSearchProcess } from "./depth-first-search";
 
 const runAlgorithm = (algorithm, graph, startNode, endNode) => {
 	switch (algorithm) {
@@ -12,4 +12,25 @@ const runAlgorithm = (algorithm, graph, startNode, endNode) => {
 	}
 };
 
-export { runAlgorithm as default };
+const getAlgorithmProcess = (algorithm, graph, startNode, endNode) => {
+	switch (algorithm) {
+		case "dijkstra":
+			return dijkstraProcess(graph, startNode, endNode);
+		case "dfs":
+			return depthFirstSearchProcess(graph, startNode, endNode);
+		default:
+			return [];
+	}
+};
+
+export { runAlgorithm as default, getAlgorithmProcess };
+
+/*
+
+From our application, is it possible to run
+
+algorithmGenerator.getNext()
+
+and have formatted values returned....?
+
+*/

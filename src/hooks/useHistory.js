@@ -22,14 +22,19 @@ const historyReducer = (state, action) => {
 				return state;
 			}
 
-			const allNodes = [
-				...present[3],
-				...action.newPresent[2].map((item) => item[0]).filter((item) => !present[3].includes(item))
-			];
+			// const allNodes = [
+			// 	...present[3],
+			// 	...action.newPresent[2].map((item) => item[0]).filter((item) => !present[3].includes(item))
+			// ];
 
+			// return {
+			// 	past: [...past, present],
+			// 	present: [...action.newPresent, ...allNodes],
+			// 	future: []
+			// };
 			return {
 				past: [...past, present],
-				present: [...action.newPresent, ...allNodes],
+				present: [...action.newPresent],
 				future: []
 			};
 		}

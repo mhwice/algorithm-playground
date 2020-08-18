@@ -77,11 +77,23 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			selector: "edge",
 			style: {
 				width: 3,
-				label: "data(weight)",
 				"line-color": "#A1A1A1",
-				"curve-style": "unbundled-bezier",
-				"target-arrow-shape": "triangle",
+				"curve-style": "haystack",
+				"target-arrow-shape": "none",
 				"target-arrow-color": "#A1A1A1"
+			}
+		},
+		{
+			selector: "edge[weight]",
+			style: {
+				label: "data(weight)"
+			}
+		},
+		{
+			selector: "edge[?isDirected]",
+			style: {
+				"curve-style": "unbundled-bezier",
+				"target-arrow-shape": "triangle"
 			}
 		},
 		{

@@ -22,9 +22,9 @@ graph.addEdge("A", D), 2;
 
 */
 
-import UnweightedGraph from "./UnweightedGraph";
+import UnweightedDirectedGraph from "./UnweightedDirectedGraph";
 
-class WeightedGraph extends UnweightedGraph {
+class WeightedDirectedGraph extends UnweightedDirectedGraph {
 	addEdge = (node, neighbor, cost) => {
 		if (Object.prototype.hasOwnProperty.call(this.adjacencyList, node)) {
 			this.adjacencyList[node].push({
@@ -43,4 +43,4 @@ class WeightedGraph extends UnweightedGraph {
 	};
 }
 
-export { WeightedGraph as default };
+export { WeightedDirectedGraph as default };

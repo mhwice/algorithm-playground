@@ -1,24 +1,46 @@
-import React, { useState, useEffect } from "react";
-import { dijkstraProcess } from "../algorithms/dijkstra";
+import React, { useState } from "react";
+import AlgorithmManager from "../algorithms/AlgorithmManager";
 import Graph from "./Graph";
 import Table from "./Table";
 import Editor from "./Editor";
 import generateRandomGraph from "../utils/generateRandomGraph";
-import getPathWithEdges from "../utils/getPathWithEdges";
 import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
-import { objectToArray, arrayOfObjectsToArrayOfArrays } from "../utils/arrayManipulators";
 
 const ROWS = 2;
 const COLUMNS = 2;
 
+const INITIAL_START_NODE = "(0, 0)";
+const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
+
+const IS_WEIGHTED = true;
+const IS_DIRECTED = true;
+const ALGORITHM = "dijkstra";
+const headings = [
+	["Node", "Reached By"],
+	["Node", "Lowest Cost to Reach Node"],
+	["Node", "Priority"]
+];
+const titles = ["Path Table", "Cost Table", "Priority Queue"];
+const INITIAL_HISTORY = [[], [], [], []];
+
+// const IS_WEIGHTED = false;
+// const IS_DIRECTED = false;
+// const ALGORITHM = "dfs";
+// const headings = [["Node", "Reached By"]];
+// const titles = ["Path Table"];
+// const INITIAL_HISTORY = [[], []];
+
 const GraphAlgorithmsVisualizerPage = () => {
 	// Graph model
-	const initialGraph = () => generateRandomGraph(ROWS, COLUMNS);
+	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ROWS, COLUMNS);
 	const [graph, setGraph] = useState(initialGraph);
 
+	const [startNode, setStartNode] = useState(INITIAL_START_NODE);
+	const [endNode, setEndNode] = useState(INITIAL_END_NODE);
+
 	// Algorithm generator
-	const initialAlgorithmResults = () => dijkstraProcess(graph, `(0, 0)`, `(${ROWS - 1}, ${COLUMNS - 1})`);
+	const initialAlgorithmResults = () => new AlgorithmManager(ALGORITHM, graph, startNode, endNode);
 	const [algorithmGenerator, setAlgorithmGenerator] = useState(initialAlgorithmResults);
 
 	// Shortest path
@@ -33,12 +55,7 @@ const GraphAlgorithmsVisualizerPage = () => {
 	const [visitedNodes, setVisitedNodes] = useState([]);
 
 	// History
-	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory([
-		[],
-		[],
-		[],
-		[]
-	]);
+	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
 
 	// ================ Steps =============
 
@@ -46,27 +63,25 @@ const GraphAlgorithmsVisualizerPage = () => {
 	const takeStep = () => {
 		const algorithmState = algorithmGenerator.next();
 		if (!algorithmState.done) {
-			const { costTable, pathTable, priorityQueue } = algorithmState.value;
-			const formattedPriorityQueueTableData = arrayOfObjectsToArrayOfArrays(priorityQueue);
+			const presentNodes = history.present[0];
+			const tables = algorithmState.value;
 
-			const presentNodes = history.present[3];
-			const newNodes = formattedPriorityQueueTableData
-				.map((item) => item[0])
-				.filter((item) => !presentNodes.includes(item));
+			let newNodes;
+			if (tables[0].length === 0) {
+				newNodes = [startNode];
+			} else {
+				newNodes = tables[0].map((item) => item[0]).filter((item) => !presentNodes.includes(item));
+			}
 
-			setHistory([
-				objectToArray(costTable),
-				objectToArray(pathTable),
-				formattedPriorityQueueTableData,
-				[...presentNodes, ...newNodes]
-			]);
+			setHistory([[...presentNodes, ...newNodes], ...tables]);
 
 			setVisitedNodes(newNodes);
 		} else if (algorithmState.value) {
 			const { shortestPath } = algorithmState.value;
 			if (shortestPath) {
+				// make sure a path was found
 				setIsPlaying(false);
-				setPath({ path: getPathWithEdges(shortestPath), drawPath: true });
+				setPath({ path: shortestPath, drawPath: true });
 			}
 		}
 	};
@@ -78,7 +93,7 @@ const GraphAlgorithmsVisualizerPage = () => {
 				return { path: prev.path, drawPath: true };
 			});
 		}
-		setVisitedNodes(history.future[0][3].filter((node) => !history.present[3].includes(node)));
+		setVisitedNodes(history.future[0][0].filter((node) => !history.present[0].includes(node)));
 		redoHistory();
 	};
 
@@ -87,17 +102,17 @@ const GraphAlgorithmsVisualizerPage = () => {
 		setPath((prev) => {
 			return { path: prev.path, drawPath: false };
 		});
-		setVisitedNodes(history.present[3].filter((node) => !history.past[history.past.length - 1][3].includes(node)));
+		setVisitedNodes(history.present[0].filter((node) => !history.past[history.past.length - 1][0].includes(node)));
 		undoHistory();
 	};
 
 	// Resets everything
 	const resetAll = () => {
 		setIsPlaying(false);
-		setVisitedNodes(history.present[3]);
+		setVisitedNodes(history.present[0]);
 		setPath({ path: [], drawPath: false });
 		setAlgorithmGenerator(initialAlgorithmResults);
-		resetHistory([[], [], [], []]);
+		resetHistory(INITIAL_HISTORY);
 	};
 
 	// Moves backwards one step
@@ -128,23 +143,22 @@ const GraphAlgorithmsVisualizerPage = () => {
 
 	// ======================= editor ======================
 
-	// useEffect(() => {
-
-	// }, [isEditing])
-
 	const editGraph = () => {
 		setIsEditing((prev) => !prev);
 	};
 
 	const graphToEdgeList = (graphList) => {
 		const edges = [];
+		const nodes = [];
 		for (let i = 0; i < graphList.length; i += 1) {
 			const { data } = graphList[i];
-			if (data.source !== undefined && data.target !== undefined && data.weight !== undefined) {
-				edges.push({ originalIndex: i, source: data.source, target: data.target, weight: data.weight });
+			if (data.source !== undefined && data.target !== undefined) {
+				edges.push({ originalIndex: i, ...data });
+			} else {
+				nodes.push({ originalIndex: i, ...data });
 			}
 		}
-		return edges;
+		return { edges, nodes };
 	};
 
 	const nodeAppearsNTimesInGraph = (g, node, N = 0) =>
@@ -245,11 +259,39 @@ const GraphAlgorithmsVisualizerPage = () => {
 	};
 
 	const updateStartNode = (val) => {
-		console.log(val);
+		const index = val.id;
+		const node = graph[index];
+		if (!node.data.isStart && !node.data.isEnd) {
+			const newGraph = [...graph];
+			newGraph.forEach((item) => {
+				if (item.data.isStart) {
+					item.data.isStart = false;
+				}
+			});
+			newGraph[index].data.isStart = true;
+			setGraph(newGraph);
+		}
+
+		setStartNode(node.data.id);
+		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, graph, node.data.id, endNode));
 	};
 
 	const updateEndNode = (val) => {
-		console.log(val);
+		const index = val.id;
+		const node = graph[index];
+		if (!node.data.isStart && !node.data.isEnd) {
+			const newGraph = [...graph];
+			newGraph.forEach((item) => {
+				if (item.data.isEnd) {
+					item.data.isEnd = false;
+				}
+			});
+			newGraph[index].data.isEnd = true;
+			setGraph(newGraph);
+		}
+
+		setEndNode(node.data.id);
+		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, graph, startNode, node.data.id));
 	};
 	// ====================== JSX =====================
 
@@ -281,28 +323,18 @@ const GraphAlgorithmsVisualizerPage = () => {
 							addEdge={addEdgeCallback}
 							removeEdge={removeEdgeCallback}
 							updateEdge={updateEdgeCallback}
-							startNode="(0, 0)"
-							endNode="(2, 2)"
+							startNode={INITIAL_START_NODE}
+							endNode={INITIAL_END_NODE}
 							updateStartNode={updateStartNode}
 							updateEndNode={updateEndNode}
 						/>
 					) : (
 						<>
-							<Table title="Cost Table" headings={["Node", "Lowest Cost to Reach Node"]} data={history.present[0]} />
-							<Table title="Path Table" headings={["Node", "Reached By"]} data={history.present[1]} />
-							<Table title="Priority Queue" headings={["Node", "Priority"]} data={history.present[2]} />
+							{history.present.slice(1).map((data, idx) => {
+								return <Table key={idx} title={titles[idx]} headings={headings[idx]} data={data} />;
+							})}
 						</>
 					)}
-					{/* <Editor
-					list={graphToEdgeList(graph)}
-					addEdge={addEdgeCallback}
-					removeEdge={removeEdgeCallback}
-					updateEdge={updateEdgeCallback}
-					startNode="(0, 0)"
-					endNode="(2, 2)"
-					updateStartNode={updateStartNode}
-					updateEndNode={updateEndNode}
-				/> */}
 				</div>
 				<div className="window">
 					<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} />

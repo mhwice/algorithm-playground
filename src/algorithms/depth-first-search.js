@@ -1,4 +1,4 @@
-import UnweightedGraph from "./utils/UnweightedGraph";
+import UnweightedGraph from "./utils/UnweightedDirectedGraph";
 import PathTable from "./utils/PathTable";
 
 const nodeObjectToString = (node) => JSON.stringify(node);
@@ -15,16 +15,28 @@ const mapGridToGraph = (grid) => {
 				{ x: i - 1, y: j }
 			];
 			candidateNeighbors.forEach((neighbor) => {
-				if (
-					typeof grid[neighbor.x] !== "undefined" &&
-					typeof grid[neighbor.x][neighbor.y] !== "undefined"
-				) {
+				if (typeof grid[neighbor.x] !== "undefined" && typeof grid[neighbor.x][neighbor.y] !== "undefined") {
 					graph.addEdge(node, nodeObjectToString(neighbor));
 				}
 			});
 		}
 	}
 	return graph;
+};
+
+const mapGraphToUnweightedUndirectedGraph = (graph) => {
+	const unweightedGraph = new UnweightedGraph();
+	graph.forEach((item) => {
+		if (
+			Object.prototype.hasOwnProperty.call(item.data, "source") &&
+			Object.prototype.hasOwnProperty.call(item.data, "target")
+		) {
+			const sourceNode = item.data.source;
+			const targetNode = item.data.target;
+			unweightedGraph.addEdge(sourceNode, targetNode);
+		}
+	});
+	return unweightedGraph;
 };
 
 const dfs = (graph, currentNode, endNode, pathTable) => {
@@ -34,9 +46,7 @@ const dfs = (graph, currentNode, endNode, pathTable) => {
 	}
 
 	// Then find all of the neighbors of the current node that have not yet been visited
-	const neighbors = graph
-		.getNeighborsOf(currentNode)
-		.filter((neighbor) => !pathTable.hasVisited(neighbor.node));
+	const neighbors = graph.getNeighborsOf(currentNode).filter((neighbor) => !pathTable.hasVisited(neighbor.node));
 
 	// For each neighbor, mark down where you came from, then repeat process.
 	for (let i = 0; i < neighbors.length; i += 1) {
@@ -58,4 +68,30 @@ const depthFirstSearch = (grid, start, end) => {
 	return { path };
 };
 
-export { depthFirstSearch as default };
+// =======================================================================
+
+function* dfsProcess(graph, currentNode, endNode, pathTable) {
+	yield {
+		pathTable: pathTable.table
+	};
+
+	if (currentNode === endNode) {
+		return [currentNode];
+	}
+
+	const neighbors = graph.getNeighborsOf(currentNode).filter((neighbor) => !pathTable.hasVisited(neighbor.node));
+
+	for (let i = 0; i < neighbors.length; i += 1) {
+		pathTable.updatePath({ from: currentNode, to: neighbors[i].node });
+		const path = yield* dfsProcess(graph, neighbors[i].node, endNode, pathTable);
+		return [pathTable.getPreviousNode(path[0]), ...path];
+	}
+}
+
+function* depthFirstSearchProcess(graph, start, end) {
+	const unweightedUndirectedGraph = mapGraphToUnweightedUndirectedGraph(graph);
+	const pathTable = new PathTable();
+	return yield* dfsProcess(unweightedUndirectedGraph, start, end, pathTable);
+}
+
+export { depthFirstSearch as default, depthFirstSearchProcess };

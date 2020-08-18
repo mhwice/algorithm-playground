@@ -33,7 +33,7 @@ graph.addEdge("A", "B", 3);
 graph.addEdge("A", D), 2;
 
 */
-class UnweightedGraph {
+class UnweightedDirectedGraph {
 	constructor() {
 		this.adjacencyList = {};
 		this.nodes = [];
@@ -51,4 +51,4 @@ class UnweightedGraph {
 	getNeighborsOf = (node) => this.adjacencyList[node];
 }
 
-export { UnweightedGraph as default };
+export { UnweightedDirectedGraph as default };
