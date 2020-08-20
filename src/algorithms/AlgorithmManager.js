@@ -57,17 +57,17 @@ class AlgorithmManager {
 					return result;
 				}
 			} else if (iterable.value) {
-				const path = iterable.value;
+				const { shortestPath } = iterable.value;
 				const result = {
 					done: iterable.done,
 					value: {
-						shortestPath: getPathWithEdges(path, this.graph)
+						shortestPath: getPathWithEdges(shortestPath, this.graph)
 					}
 				};
 				return result;
 			}
 		}
-		return "not found";
+		return "algorithm not found";
 	}
 }
 

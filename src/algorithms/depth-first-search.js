@@ -24,7 +24,6 @@ const mapGridToGraph = (grid) => {
 	return graph;
 };
 
-// ! THIS IS WRONG!
 const mapGraphToUnweightedUndirectedGraph = (graph) => {
 	const unweightedGraph = new UnweightedUndirectedGraph();
 	graph.forEach((item) => {
@@ -73,35 +72,36 @@ const depthFirstSearch = (grid, start, end) => {
 
 // =======================================================================
 
-function* dfsProcess(graph, currentNode, endNode, pathTable) {
+function* dfsProcess(graph, currentNode, startNode, endNode, pathTable) {
 	yield {
 		pathTable: pathTable.table
 	};
 
-	// console.log("currentNode", JSON.stringify(currentNode, null, 2));
-
 	if (currentNode === endNode) {
-		return [currentNode];
+		return { shortestPath: [currentNode] };
 	}
 
-	const neighbors = graph.getNeighborsOf(currentNode).filter((neighbor) => !pathTable.hasVisited(neighbor.node));
-	// console.log("neighbors", JSON.stringify(graph.getNeighborsOf(currentNode), null, 2));
-	// console.log("neighbors", JSON.stringify(neighbors, null, 2));
+	const neighbors = graph.getNeighborsOf(currentNode);
 
 	for (let i = 0; i < neighbors.length; i += 1) {
-		pathTable.updatePath({ from: currentNode, to: neighbors[i].node });
-		const path = yield* dfsProcess(graph, neighbors[i].node, endNode, pathTable);
-		// console.log("path", JSON.stringify(path, null, 2));
-		return [pathTable.getPreviousNode(path[0]), ...path];
+		if (!pathTable.hasVisited(neighbors[i].node)) {
+			pathTable.updatePath({ from: currentNode, to: neighbors[i].node });
+			const path = yield* dfsProcess(graph, neighbors[i].node, startNode, endNode, pathTable);
+			if (path) {
+				return { shortestPath: [pathTable.getPreviousNode(path.shortestPath[0]), ...path.shortestPath] };
+			}
+		}
+	}
+
+	if (currentNode === startNode) {
+		return { shortestPath: [] };
 	}
 }
 
 function* depthFirstSearchProcess(graph, start, end) {
-	console.log("graph", JSON.stringify(graph, null, 2));
 	const unweightedUndirectedGraph = mapGraphToUnweightedUndirectedGraph(graph);
-	console.log("unweightedUndirectedGraph", JSON.stringify(unweightedUndirectedGraph, null, 2));
 	const pathTable = new PathTable();
-	return yield* dfsProcess(unweightedUndirectedGraph, start, end, pathTable);
+	return yield* dfsProcess(unweightedUndirectedGraph, start, start, end, pathTable);
 }
 
 export { depthFirstSearch as default, depthFirstSearchProcess };

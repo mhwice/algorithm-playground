@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CytoscapeComponent from "react-cytoscapejs";
+import cytoscape from "cytoscape";
+import cola from "cytoscape-cola";
+
+cytoscape.use(cola);
 
 const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	const [cyRef, setCyRef] = useState({});
@@ -8,7 +12,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	useEffect(() => {
 		try {
 			cyRef.reset();
-			const newLayout = cyRef.layout({ name: "circle" });
+			const newLayout = cyRef.layout({ name: "cola" });
 			newLayout.run();
 		} catch (err) {
 			console.log("no problem");
@@ -45,7 +49,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 							}
 						}
 					)
-					.delay(i * 200);
+					.delay(i * 100);
 				i += 1;
 			});
 		} else {
@@ -102,7 +106,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 		{
 			selector: "edge[?isDirected]",
 			style: {
-				"curve-style": "unbundled-bezier",
+				"curve-style": "bezier",
 				"target-arrow-shape": "triangle"
 			}
 		},
@@ -137,10 +141,6 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 		name: "grid",
 		rows
 	};
-
-	// const layout = {
-	// 	name: "circle"
-	// };
 
 	const cyStyle = {
 		height: "100%",

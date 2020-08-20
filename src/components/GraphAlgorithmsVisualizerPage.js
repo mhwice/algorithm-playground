@@ -18,8 +18,8 @@ import {
 	isWeightValid
 } from "../utils/graphManipulation";
 
-const ROWS = 2;
-const COLUMNS = 2;
+const ROWS = 9;
+const COLUMNS = 9;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
@@ -157,7 +157,7 @@ const GraphAlgorithmsVisualizerPage = () => {
 		if (isPlaying) {
 			moveForward();
 		}
-	}, 500);
+	}, 300); // the more nodes, the smaller the interval #nodes 100/81
 
 	// ======================= editor ======================
 

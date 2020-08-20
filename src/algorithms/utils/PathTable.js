@@ -24,12 +24,11 @@ class PathTable {
 		return path;
 	};
 
-	hasVisited = (node) => {
-		if (Object.values(this.table).indexOf(node) > -1) {
-			return true;
-		}
-		return false;
-	};
+	hasVisitedKey = (node) => Object.prototype.hasOwnProperty.call(this.table, node);
+
+	hasVisitedValue = (node) => Object.values(this.table).indexOf(node) > -1;
+
+	hasVisited = (node) => this.hasVisitedKey(node) || this.hasVisitedValue(node);
 
 	toString = () => {
 		console.log("pathTable", JSON.parse(JSON.stringify(this.table)));
