@@ -9,11 +9,13 @@ class AlgorithmManager {
 			case "dijkstra": {
 				this.algorithm = "dijkstra";
 				this.process = dijkstraProcess(graph, startNode, endNode);
+				this.graph = graph;
 				break;
 			}
 			case "dfs": {
 				this.algorithm = "dfs";
 				this.process = depthFirstSearchProcess(graph, startNode, endNode);
+				this.graph = graph;
 				break;
 			}
 			default:
@@ -25,37 +27,41 @@ class AlgorithmManager {
 		const iterable = this.process.next();
 		if (this.algorithm === "dijkstra") {
 			if (!iterable.done) {
-				const { costTable, pathTable, priorityQueue } = iterable.value;
+				if (iterable.value) {
+					const { costTable, pathTable, priorityQueue } = iterable.value;
+					const result = {
+						done: iterable.done,
+						value: [objectToArray(pathTable), objectToArray(costTable), arrayOfObjectsToArrayOfArrays(priorityQueue)]
+					};
+					return result;
+				}
+			} else if (iterable.value) {
+				const { shortestPath } = iterable.value;
 				const result = {
 					done: iterable.done,
-					value: [objectToArray(pathTable), objectToArray(costTable), arrayOfObjectsToArrayOfArrays(priorityQueue)]
+					value: {
+						shortestPath: getPathWithEdges(shortestPath)
+					}
 				};
 				return result;
 			}
-			const { shortestPath } = iterable.value;
-			const result = {
-				done: iterable.done,
-				value: {
-					shortestPath: getPathWithEdges(shortestPath)
-				}
-			};
-			return result;
 		}
 		if (this.algorithm === "dfs") {
 			if (!iterable.done) {
-				const { pathTable } = iterable.value;
-				const result = {
-					done: iterable.done,
-					value: [objectToArray(pathTable)]
-				};
-				return result;
-			}
-			if (iterable.value) {
+				if (iterable.value) {
+					const { pathTable } = iterable.value;
+					const result = {
+						done: iterable.done,
+						value: [objectToArray(pathTable)]
+					};
+					return result;
+				}
+			} else if (iterable.value) {
 				const path = iterable.value;
 				const result = {
 					done: iterable.done,
 					value: {
-						shortestPath: getPathWithEdges(path)
+						shortestPath: getPathWithEdges(path, this.graph)
 					}
 				};
 				return result;

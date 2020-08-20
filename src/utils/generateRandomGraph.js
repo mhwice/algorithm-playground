@@ -1,5 +1,36 @@
 const generateRandomNumber = (min = 1, max = 10) => Math.floor(Math.random() * (max - min + 1) + min);
 
+const graphToEdgeList = (graphList) => {
+	const edges = [];
+	const nodes = [];
+	for (let i = 0; i < graphList.length; i += 1) {
+		const { data } = graphList[i];
+		if (data.source !== undefined && data.target !== undefined) {
+			edges.push(graphList[i]);
+		} else {
+			nodes.push(graphList[i]);
+		}
+	}
+	return { edges, nodes };
+};
+
+function filterOut(src) {
+	const found = new Set();
+	return src.filter((item) => {
+		const { data } = item;
+		const result = found.has(`source:${data.source}, target:${data.target}`);
+		found.add(`source:${data.source}, target:${data.target}`);
+		found.add(`source:${data.target}, target:${data.source}`);
+		return !result;
+	});
+}
+
+const filterGraph = (graph) => {
+	const { edges, nodes } = graphToEdgeList(graph);
+	const uniqueEdges = filterOut(edges);
+	return [...nodes, ...uniqueEdges];
+};
+
 const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {
 	const graph = [];
 
@@ -55,11 +86,11 @@ const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {
 		}
 	}
 
+	if (!isDirected) {
+		return filterGraph(graph);
+	}
+
 	return graph;
 };
 
 export { generateRandomGraph as default };
-
-// const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {}
-// if (!isDirected) -> 1 edge connecting nodes only! Does having 2 edges vs 1 matter?
-// if (!isWeighted) -> remove weight property!

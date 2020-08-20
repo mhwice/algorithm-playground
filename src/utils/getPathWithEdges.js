@@ -1,4 +1,8 @@
-const getPathWithEdges = (path) => {
+const getPathWithEdges = (path, graph) => {
+	if (!path) {
+		return path;
+	}
+
 	if (path.length < 2) {
 		return path;
 	}
@@ -8,7 +12,17 @@ const getPathWithEdges = (path) => {
 		const currentNode = path[i];
 		const previousNode = path[i - 1];
 		const edge = `${previousNode}-${currentNode}`;
-		pathWithEdges.push(edge);
+
+		if (graph) {
+			if (graph.filter((item) => item.data.id === edge).length === 1) {
+				pathWithEdges.push(edge);
+			} else {
+				pathWithEdges.push(`${currentNode}-${previousNode}`);
+			}
+		} else {
+			pathWithEdges.push(edge);
+		}
+
 		pathWithEdges.push(currentNode);
 	}
 	return pathWithEdges;

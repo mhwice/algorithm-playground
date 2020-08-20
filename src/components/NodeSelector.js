@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 const NodeSelector = ({ onSelect, initialValue, nodes }) => (
-	<select onChange={(e) => onSelect({ id: e.target.value })} value={initialValue}>
+	<select className="node-selector" onChange={(e) => onSelect(e.target.value)} value={initialValue}>
 		{nodes.map((node, idx) => (
 			<option key={idx} value={node.originalIndex}>
 				{node.id}

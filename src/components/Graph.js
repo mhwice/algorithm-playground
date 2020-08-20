@@ -5,6 +5,16 @@ import CytoscapeComponent from "react-cytoscapejs";
 const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	const [cyRef, setCyRef] = useState({});
 
+	useEffect(() => {
+		try {
+			cyRef.reset();
+			const newLayout = cyRef.layout({ name: "circle" });
+			newLayout.run();
+		} catch (err) {
+			console.log("no problem");
+		}
+	}, [elements, cyRef, rows]);
+
 	// Toggles visited status of nodes
 	useEffect(() => {
 		visitedNodes.forEach((node) => {
@@ -28,14 +38,14 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 							}
 						},
 						{
-							duration: 250,
+							duration: 100,
 							queue: true,
 							complete() {
 								console.log("Animation complete");
 							}
 						}
 					)
-					.delay(i * 500);
+					.delay(i * 200);
 				i += 1;
 			});
 		} else {
@@ -156,7 +166,6 @@ Graph.defaultProps = {
 	rows: 1,
 	graph: [],
 	path: { path: [], draw: false },
-	shouldAnimatePath: false,
 	visitedNodes: []
 };
 
@@ -164,7 +173,6 @@ Graph.propTypes = {
 	rows: PropTypes.number,
 	graph: PropTypes.arrayOf(PropTypes.object),
 	path: PropTypes.objectOf(PropTypes.any),
-	shouldAnimatePath: PropTypes.bool,
 	visitedNodes: PropTypes.arrayOf(PropTypes.string)
 };
 

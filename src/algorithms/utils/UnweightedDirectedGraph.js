@@ -48,7 +48,12 @@ class UnweightedDirectedGraph {
 		}
 	};
 
-	getNeighborsOf = (node) => this.adjacencyList[node];
+	getNeighborsOf = (node) => {
+		if (this.adjacencyList[node]) {
+			return this.adjacencyList[node];
+		}
+		return [];
+	};
 }
 
 export { UnweightedDirectedGraph as default };

@@ -13,7 +13,12 @@ class UnweightedUndirectedGraph {
 		}
 	};
 
-	getNeighborsOf = (node) => this.adjacencyList[node];
+	getNeighborsOf = (node) => {
+		if (this.adjacencyList[node]) {
+			return this.adjacencyList[node];
+		}
+		return [];
+	};
 }
 
 export { UnweightedUndirectedGraph as default };

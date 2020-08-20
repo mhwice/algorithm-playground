@@ -1,4 +1,3 @@
-import { node } from "prop-types";
 import WeightedGraph from "./utils/WeightedDirectedGraph";
 import PriorityQueue from "./utils/PriorityQueue";
 import CostTable from "./utils/CostTable";
@@ -21,12 +20,16 @@ const mapGraphToWeightedGraph = (graph) => {
 	return weightedGraph;
 };
 
+// ! graph does not have all the correct nodes
 function* dijkstraProcess(graph, startNode, endNode) {
+	console.log("graph", JSON.stringify(graph, null, 2));
 	const weightedGraph = mapGraphToWeightedGraph(graph);
+	console.log("weightedGraph", JSON.stringify(weightedGraph, null, 2));
 	const costTable = new CostTable();
 	const pathTable = new PathTable();
 	const priorityQueue = new PriorityQueue();
 
+	console.log("weightedGraph.nodes", JSON.stringify(weightedGraph.nodes, null, 2));
 	costTable.initializeCosts({ nodes: weightedGraph.nodes, startNode });
 
 	priorityQueue.enqueue({ node: startNode, priority: 0 });
@@ -40,14 +43,20 @@ function* dijkstraProcess(graph, startNode, endNode) {
 
 		const { node: currentNode } = priorityQueue.dequeue();
 
+		// console.log("currentNode", JSON.stringify(currentNode, null, 2));
 		if (currentNode === endNode) {
 			break;
 		}
 
 		const neighbors = weightedGraph.getNeighborsOf(currentNode);
-		neighbors.forEach((neighbor) => {
-			const costFromCurrentNodeToNeighbor = costTable.getCostOf(currentNode) + neighbor.cost;
+		// console.log("neighbors", JSON.stringify(neighbors, null, 2));
 
+		neighbors.forEach((neighbor) => {
+			// console.log("neighbor", JSON.stringify(neighbor, null, 2));
+			const costFromCurrentNodeToNeighbor = costTable.getCostOf(currentNode) + neighbor.cost;
+			// console.log("costFromCurrentNodeToNeighbor", JSON.stringify(costFromCurrentNodeToNeighbor, null, 2));
+
+			// console.log("costTable.getCostOf(neighbor.node)", JSON.stringify(costTable.getCostOf(neighbor.node), null, 2));
 			if (costFromCurrentNodeToNeighbor < costTable.getCostOf(neighbor.node)) {
 				costTable.updateCost({ node: neighbor.node, newCost: costFromCurrentNodeToNeighbor });
 				pathTable.updatePath({ from: currentNode, to: neighbor.node });

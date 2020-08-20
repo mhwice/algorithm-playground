@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import AlgorithmManager from "../algorithms/AlgorithmManager";
 import Graph from "./Graph";
 import Table from "./Table";
@@ -6,6 +6,17 @@ import Editor from "./Editor";
 import generateRandomGraph from "../utils/generateRandomGraph";
 import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
+import {
+	graphToEdgeList,
+	nodeNameIsValid,
+	createEdge,
+	createNode,
+	isNodeInGraph,
+	isEdgeInGraph,
+	isNodeUsed,
+	removeNode,
+	isWeightValid
+} from "../utils/graphManipulation";
 
 const ROWS = 2;
 const COLUMNS = 2;
@@ -13,23 +24,25 @@ const COLUMNS = 2;
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
-const IS_WEIGHTED = true;
-const IS_DIRECTED = true;
-const ALGORITHM = "dijkstra";
-const headings = [
-	["Node", "Reached By"],
-	["Node", "Lowest Cost to Reach Node"],
-	["Node", "Priority"]
-];
-const titles = ["Path Table", "Cost Table", "Priority Queue"];
-const INITIAL_HISTORY = [[], [], [], []];
+// const IS_WEIGHTED = true;
+// const IS_DIRECTED = true;
+// const ALGORITHM = "dijkstra";
+// const TITLE = "Dijkstra's Algorithm";
+// const headings = [
+// 	["Node", "Reached By"],
+// 	["Node", "Lowest Cost to Reach Node"],
+// 	["Node", "Priority"]
+// ];
+// const titles = ["Path Table", "Cost Table", "Priority Queue"];
+// const INITIAL_HISTORY = [[], [], [], []];
 
-// const IS_WEIGHTED = false;
-// const IS_DIRECTED = false;
-// const ALGORITHM = "dfs";
-// const headings = [["Node", "Reached By"]];
-// const titles = ["Path Table"];
-// const INITIAL_HISTORY = [[], []];
+const IS_WEIGHTED = false;
+const IS_DIRECTED = false;
+const ALGORITHM = "dfs";
+const TITLE = "Depth First Search";
+const headings = [["Node", "Reached By"]];
+const titles = ["Path Table"];
+const INITIAL_HISTORY = [[], []];
 
 const GraphAlgorithmsVisualizerPage = () => {
 	// Graph model
@@ -63,25 +76,30 @@ const GraphAlgorithmsVisualizerPage = () => {
 	const takeStep = () => {
 		const algorithmState = algorithmGenerator.next();
 		if (!algorithmState.done) {
-			const presentNodes = history.present[0];
-			const tables = algorithmState.value;
+			if (algorithmState.value) {
+				const presentNodes = history.present[0];
+				const tables = algorithmState.value;
 
-			let newNodes;
-			if (tables[0].length === 0) {
-				newNodes = [startNode];
-			} else {
-				newNodes = tables[0].map((item) => item[0]).filter((item) => !presentNodes.includes(item));
+				let newNodes;
+				if (tables[0].length === 0) {
+					newNodes = [startNode];
+				} else {
+					newNodes = tables[0].map((item) => item[0]).filter((item) => !presentNodes.includes(item));
+				}
+
+				setHistory([[...presentNodes, ...newNodes], ...tables]);
+
+				setVisitedNodes(newNodes);
 			}
-
-			setHistory([[...presentNodes, ...newNodes], ...tables]);
-
-			setVisitedNodes(newNodes);
 		} else if (algorithmState.value) {
 			const { shortestPath } = algorithmState.value;
 			if (shortestPath) {
 				// make sure a path was found
 				setIsPlaying(false);
 				setPath({ path: shortestPath, drawPath: true });
+			} else {
+				setIsPlaying(false);
+				console.log("path not found");
 			}
 		}
 	};
@@ -139,182 +157,203 @@ const GraphAlgorithmsVisualizerPage = () => {
 		if (isPlaying) {
 			moveForward();
 		}
-	}, 1000);
+	}, 500);
 
 	// ======================= editor ======================
+
+	useEffect(() => {
+		if (isEditing) {
+			resetAll();
+		}
+	}, [isEditing]);
+
+	// useEffect(() => {
+	// 	console.log("graph", JSON.stringify(graph, null, 2));
+	// }, [graph]);
 
 	const editGraph = () => {
 		setIsEditing((prev) => !prev);
 	};
 
-	const graphToEdgeList = (graphList) => {
-		const edges = [];
-		const nodes = [];
-		for (let i = 0; i < graphList.length; i += 1) {
-			const { data } = graphList[i];
-			if (data.source !== undefined && data.target !== undefined) {
-				edges.push({ originalIndex: i, ...data });
-			} else {
-				nodes.push({ originalIndex: i, ...data });
-			}
-		}
-		return { edges, nodes };
-	};
-
-	const nodeAppearsNTimesInGraph = (g, node, N = 0) =>
-		g.filter((item) => item.data.source === node || item.data.target === node).length > N;
-
-	const removeNodeIfUnused = (newGraph, node, N = 0) => {
-		if (!nodeAppearsNTimesInGraph(newGraph, node, N)) {
-			return newGraph.filter((item) => item.data.id !== node);
-		}
-		return newGraph;
-	};
-
-	const nodeNameIsValid = (node) => node.length > 0 && node.length < 7;
-
-	const addNodeIfNotInGraph = (newGraph, node) => {
-		if (!nodeAppearsNTimesInGraph(newGraph, node)) {
-			const newNode = {
-				data: {
-					id: node,
-					label: node,
-					isStart: false,
-					isEnd: false
-				}
-			};
-			newGraph.push(newNode);
-		}
-
-		return newGraph;
-	};
-
+	// need to prevent the deletion of the start and end nodes!
 	const removeEdgeCallback = (id) => {
-		const removedEdge = graph[id];
-		const sourceNode = removedEdge.data.source;
-		const targetNode = removedEdge.data.target;
+		const edgeData = graph[id].data;
+		const { source } = edgeData;
+		const { target } = edgeData;
+
 		let newGraph = graph.filter((_, index) => index !== id);
 
-		newGraph = removeNodeIfUnused(newGraph, sourceNode);
-		newGraph = removeNodeIfUnused(newGraph, targetNode);
+		if (!isNodeUsed(newGraph, source) && source !== startNode && source !== endNode) {
+			newGraph = removeNode(newGraph, source);
+		}
+
+		if (!isNodeUsed(newGraph, target) && target !== startNode && target !== endNode) {
+			newGraph = removeNode(newGraph, target);
+		}
 
 		setGraph(newGraph);
+		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
 	};
 
-	const addEdgeCallback = () => {
-		let newGraph = [...graph];
-
-		const fromNode = "A";
-		const toNode = "B";
-
-		newGraph = addNodeIfNotInGraph(newGraph, fromNode);
-		newGraph = addNodeIfNotInGraph(newGraph, toNode);
-
-		const newEdge = {
-			data: {
-				id: `${fromNode}-${toNode}`,
-				label: fromNode,
-				source: fromNode,
-				target: toNode,
-				weight: 0
+	const addEdgeCallback = (fromNode = "A", toNode = "B") => {
+		if (!isEdgeInGraph(graph, fromNode, toNode)) {
+			const newGraph = [...graph];
+			if (!isNodeInGraph(newGraph, fromNode)) {
+				newGraph.push(createNode(fromNode, false, false));
 			}
-		};
-		newGraph.push(newEdge);
-
-		setGraph(newGraph);
+			if (!isNodeInGraph(newGraph, toNode)) {
+				newGraph.push(createNode(toNode, false, false));
+			}
+			newGraph.push(createEdge(fromNode, toNode, 0, IS_DIRECTED, IS_WEIGHTED));
+			setGraph(newGraph);
+			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
+		}
 	};
 
-	const updateEdgeCallback = (val) => {
+	const updateEdgeCallback = (id, values) => {
 		let newGraph = [...graph];
-		const { fromNode, toNode, weight, id } = val;
-		const { source, target } = graph[id].data;
-		const newEdge = {
-			data: {
-				id: `${fromNode}-${toNode}`,
-				label: fromNode,
-				source: fromNode,
-				target: toNode,
-				weight: Number(weight)
-			}
-		};
+		const { fromNode, toNode, weight } = values;
+		const { source, target, weight: oldWeight } = graph[id].data;
 
 		if (source !== fromNode) {
 			if (nodeNameIsValid(fromNode)) {
-				newGraph = removeNodeIfUnused(newGraph, source, 1);
-				newGraph = addNodeIfNotInGraph(newGraph, fromNode);
-				newGraph[id] = newEdge;
+				if (fromNode === toNode) {
+					return;
+				}
+
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+
+				if (!isNodeUsed(newGraph, source) && source !== startNode && source !== endNode) {
+					newGraph = removeNode(newGraph, source);
+				}
+
+				if (!isNodeUsed(newGraph, target) && target !== startNode && target !== endNode) {
+					newGraph = removeNode(newGraph, target);
+				}
+
+				if (!isNodeInGraph(newGraph, fromNode)) {
+					newGraph.push(createNode(fromNode, false, false));
+				}
+
 				setGraph(newGraph);
 			}
 		} else if (target !== toNode) {
 			if (nodeNameIsValid(toNode)) {
-				newGraph = removeNodeIfUnused(newGraph, target, 1);
-				newGraph = addNodeIfNotInGraph(newGraph, toNode);
-				newGraph[id] = newEdge;
+				if (fromNode === toNode) {
+					return;
+				}
+
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+
+				if (!isNodeUsed(newGraph, source) && source !== startNode && source !== endNode) {
+					newGraph = removeNode(newGraph, source);
+				}
+
+				if (!isNodeUsed(newGraph, target) && target !== startNode && target !== endNode) {
+					newGraph = removeNode(newGraph, target);
+				}
+
+				if (!isNodeInGraph(newGraph, toNode)) {
+					newGraph.push(createNode(toNode, false, false));
+				}
+
 				setGraph(newGraph);
 			}
-		} else if (!weight || weight.match(/^\d{1,3}$/)) {
-			newGraph[id] = newEdge;
-			setGraph(newGraph);
+		} else if (oldWeight !== weight) {
+			if (isWeightValid(weight)) {
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+				setGraph(newGraph);
+			}
 		}
+		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
 	};
 
-	const updateStartNode = (val) => {
-		const index = val.id;
-		const node = graph[index];
+	const updateStartNode = (id) => {
+		const node = graph[id];
+
+		// Check if node is already the start or end node
 		if (!node.data.isStart && !node.data.isEnd) {
-			const newGraph = [...graph];
+			let newGraph = [...graph];
+
+			// Mark all nodes as not the start node
 			newGraph.forEach((item) => {
 				if (item.data.isStart) {
 					item.data.isStart = false;
 				}
 			});
-			newGraph[index].data.isStart = true;
-			setGraph(newGraph);
-		}
 
-		setStartNode(node.data.id);
-		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, graph, node.data.id, endNode));
+			// Mark the new node as the start node
+			newGraph[id].data.isStart = true;
+
+			// Remove previous start node if no longer used
+			if (!isNodeUsed(newGraph, startNode)) {
+				newGraph = removeNode(newGraph, startNode);
+			}
+
+			// Update graph
+			setGraph(newGraph);
+			setStartNode(node.data.id);
+			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, node.data.id, endNode));
+		}
 	};
 
-	const updateEndNode = (val) => {
-		const index = val.id;
-		const node = graph[index];
+	const updateEndNode = (id) => {
+		const node = graph[id];
+
+		// Check if node is already the start node or end node
 		if (!node.data.isStart && !node.data.isEnd) {
-			const newGraph = [...graph];
+			let newGraph = [...graph];
+
+			// Mark all nodes as not the end node
 			newGraph.forEach((item) => {
 				if (item.data.isEnd) {
 					item.data.isEnd = false;
 				}
 			});
-			newGraph[index].data.isEnd = true;
-			setGraph(newGraph);
-		}
 
-		setEndNode(node.data.id);
-		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, graph, startNode, node.data.id));
+			// Mark the new node as the end node
+			newGraph[id].data.isEnd = true;
+
+			// Remove previous end node if no longer used
+			if (!isNodeUsed(newGraph, endNode)) {
+				newGraph = removeNode(newGraph, endNode);
+			}
+
+			// Update graph
+			setGraph(newGraph);
+			setEndNode(node.data.id);
+			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, node.data.id));
+		}
 	};
 	// ====================== JSX =====================
 
 	return (
 		<div>
-			<h1>Dijkstra Algorithm</h1>
-			<div className="media-button-container">
-				<button className="media-button" onClick={moveBackward} type="button">
-					{"<-"}
-				</button>
-				<button className="media-button" onClick={playPauseToggle} type="button">
-					{isPlaying ? "Pause" : "Play"}
-				</button>
-				<button className="media-button" onClick={moveForward} type="button">
-					{"->"}
-				</button>
-				<button className="media-button" onClick={resetAll} type="button">
-					Reset
-				</button>
-				<button className="media-button" onClick={editGraph} type="button">
-					{isEditing ? "Done" : "Edit"}
-				</button>
+			<h1>{TITLE}</h1>
+			<div className="button-row">
+				{!isEditing && (
+					<div className="media-button-container">
+						<button className="media-button" onClick={moveBackward} type="button">
+							{"<-"}
+						</button>
+						<button className="media-button" onClick={playPauseToggle} type="button">
+							{isPlaying ? "Pause" : "Play"}
+						</button>
+						<button className="media-button" onClick={moveForward} type="button">
+							{"->"}
+						</button>
+						<button className="media-button" onClick={resetAll} type="button">
+							Reset
+						</button>
+					</div>
+				)}
+				<div className="media-button-container">
+					<button className="media-button edit-button" onClick={editGraph} type="button">
+						{isEditing ? "Done" : "Edit"}
+					</button>
+				</div>
 			</div>
+
 			<div className="window-container">
 				<div className="window">
 					{isEditing ? (
@@ -323,10 +362,9 @@ const GraphAlgorithmsVisualizerPage = () => {
 							addEdge={addEdgeCallback}
 							removeEdge={removeEdgeCallback}
 							updateEdge={updateEdgeCallback}
-							startNode={INITIAL_START_NODE}
-							endNode={INITIAL_END_NODE}
 							updateStartNode={updateStartNode}
 							updateEndNode={updateEndNode}
+							isWeighted={IS_WEIGHTED}
 						/>
 					) : (
 						<>
@@ -337,7 +375,7 @@ const GraphAlgorithmsVisualizerPage = () => {
 					)}
 				</div>
 				<div className="window">
-					<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} />
+					<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} isEditing={isEditing} />
 				</div>
 			</div>
 		</div>

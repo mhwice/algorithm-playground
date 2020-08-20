@@ -1,0 +1,30 @@
+.selector-box {
+  display: flex;
+  justify-content: start;
+  max-height: 500px;
+  margin: 5px;
+}
+
+.selectors {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.add-edge-button {
+  margin: 0 5px;
+  display: block;
+  border-radius: 50px;
+  border: 1px solid black;
+  background: snow;
+  padding: 10px 20px;
+  outline: none;
+}
+
+.add-edge-button:hover {
+  background-color: lightgray;
+}
+
+.editor-item-container {
+  height: 550px;
+  overflow: auto;
+}

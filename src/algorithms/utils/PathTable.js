@@ -16,6 +16,9 @@ class PathTable {
 		while (lastStep !== startNode) {
 			path.unshift(this.getPreviousNode(lastStep));
 			lastStep = this.getPreviousNode(lastStep);
+			if (lastStep === undefined) {
+				return undefined;
+			}
 		}
 
 		return path;

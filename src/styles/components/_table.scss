@@ -44,6 +44,13 @@
 // body {
 //   margin: 30px;
 // }
+
+.table-container {
+  height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 table {
   border-collapse: separate;
   border-spacing: 0;
@@ -86,4 +93,3 @@ table tr:last-child td:first-child {
 table tr:last-child td:last-child {
   border-bottom-right-radius: 6px;
 }
-

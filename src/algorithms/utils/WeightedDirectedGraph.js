@@ -39,6 +39,9 @@ class WeightedDirectedGraph extends UnweightedDirectedGraph {
 					cost
 				}
 			];
+			if (!Object.prototype.hasOwnProperty.call(this.adjacencyList, neighbor)) {
+				this.nodes.push(neighbor);
+			}
 		}
 	};
 }
