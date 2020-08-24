@@ -6,6 +6,7 @@ import GraphAlgorithmsOverviewPage from "../components/GraphAlgorithmsOverviewPa
 import GraphAlgorithmsVisualizerPage from "../components/GraphAlgorithmsVisualizerPage";
 import SortingAlgorithmsOverviewPage from "../components/SortingAlgorithmsOverviewPage";
 import DataStructuresPage from "../components/DataStructuresPage";
+import SortingAlgorithmsVisualizerPage from "../components/SortingAlgorithmsVisualizerPage";
 
 const AppRouter = () => (
 	<BrowserRouter>
@@ -15,8 +16,8 @@ const AppRouter = () => (
 			<Route path="/graph-algorithms" component={GraphAlgorithmsOverviewPage} exact />
 			<Route path="/graph-algorithms/dijkstra" component={GraphAlgorithmsVisualizerPage} />
 			<Route path="/graph-algorithms/depth-first-search" component={GraphAlgorithmsVisualizerPage} />
-			<Route path="/sorting-algorithms" component={SortingAlgorithmsOverviewPage} />
-			<Route path="/dijkstra" component={GraphAlgorithmsVisualizerPage} />
+			<Route path="/sorting-algorithms" component={SortingAlgorithmsOverviewPage} exact />
+			<Route path="/sorting-algorithms/merge-sort" component={SortingAlgorithmsVisualizerPage} />
 			<Route component={NotFoundPage} />
 		</Switch>
 	</BrowserRouter>

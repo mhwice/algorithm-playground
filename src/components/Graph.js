@@ -12,7 +12,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	useEffect(() => {
 		try {
 			cyRef.reset();
-			const newLayout = cyRef.layout({ name: "cola" });
+			const newLayout = cyRef.layout({ name: "cola", padding: 20 });
 			newLayout.run();
 		} catch (err) {
 			console.log("no problem");
@@ -82,7 +82,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 				label: "data(id)",
 				"text-valign": "top",
 				"text-halign": "left",
-				"border-color": "#A1A1A1",
+				"border-color": "#C1C6CC",
 				"border-width": 5,
 				"border-opacity": 1
 			}
@@ -91,10 +91,10 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			selector: "edge",
 			style: {
 				width: 3,
-				"line-color": "#A1A1A1",
+				"line-color": "#C1C6CC",
 				"curve-style": "haystack",
 				"target-arrow-shape": "none",
-				"target-arrow-color": "#A1A1A1"
+				"target-arrow-color": "#C1C6CC"
 			}
 		},
 		{

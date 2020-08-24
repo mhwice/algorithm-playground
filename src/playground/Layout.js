@@ -1,0 +1,157 @@
+import React from "react";
+
+const Layout = () => (
+	<div className="wrap">
+		<div className="top" />
+		<div className="middle">
+			<div className="inner-window" id="left">
+				<table>
+					<thead>
+						<tr>
+							<th>Header One</th>
+							<th>Header Two</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+						<tr>
+							<td>a</td>
+							<td>b</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div className="inner-window" id="right" />
+		</div>
+		<div className="bottom" />
+	</div>
+);
+
+export { Layout as default };

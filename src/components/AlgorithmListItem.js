@@ -1,20 +1,27 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+// import { Link } from "react-router-dom";
 
-const AlgorithmListItem = () => (
+const AlgorithmListItem = ({ algorithm, description, isDirected, isWeighted }) => (
 	<div className="list-item-container">
-		<Link to="/graph-algorithms/dijkstra">
-			<h3>Dijkstras Algorithm</h3>
-			<p>Is Weighted and Guarantees the Shortest Path</p>
-		</Link>
-		<div className="tag-container">
-			<div className="tag tag-directed">Directed</div>
-			<div className="tag tag-weighted">Weighted</div>
+		<div className="list-item-header">
+			<h1>{algorithm}</h1>
+			<div className="tag tag-directed">{isDirected ? "Directed" : "Undirected"}</div>
+			<div className="tag tag-weighted">{isWeighted ? "Weighted" : "Unweighted"}</div>
 		</div>
-		<button className="btn-si btn-github" type="button">
+		<p>{description}</p>
+
+		{/* <button className="btn-si btn-github" type="button">
 			View Code on Github
-		</button>
+		</button> */}
 	</div>
 );
+
+AlgorithmListItem.propTypes = {
+	algorithm: PropTypes.string.isRequired,
+	description: PropTypes.string.isRequired,
+	isDirected: PropTypes.bool.isRequired,
+	isWeighted: PropTypes.bool.isRequired
+};
 
 export default AlgorithmListItem;

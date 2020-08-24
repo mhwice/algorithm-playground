@@ -1,27 +1,43 @@
 .list-item-container {
   padding: 20px;
-  border: 1px solid black;
+  margin: 20px;
+  width: 50vw;
+  background-color: #e0e5ec;
   border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  // box-shadow:
+  //  -7px -7px 20px 0px #fff9,
+  //  -4px -4px 5px 0px #fff9,
+  //  7px 7px 20px 0px #0002,
+  //  4px 4px 5px 0px #0001,
+  //  inset 0px 0px 0px 0px #fff9,
+  //  inset 0px 0px 0px 0px #0001,
+  //  inset 0px 0px 0px 0px #fff9,
+  //  inset 0px 0px 0px 0px #0001;
+}
+
+.list-item-header {
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 
 .tag {
-  width: fit-content;
+  height: fit-content;
+  font-size: 12px;
   padding: 10px;
-  border-radius: 10px;
-  margin-right: 5px;
+  border-radius: 100px;
+  margin: 5px;
 }
 
 .tag-directed {
-  background-color: lightgreen;
+  color: darken($color: $green, $amount: 10%);
+  background-color: rgba($green, 0.15);
 }
 
 .tag-weighted {
-  background-color: lightskyblue;
-}
-
-.tag-container {
-  display: flex;
-  justify-content: start;
+  color: darken($color: $blue, $amount: 10%);
+  background-color: rgba($blue, 0.15)
 }
 
 .btn-si {
@@ -44,9 +60,13 @@
   background-color: #2a2a2a;
   background-image: url("../../public/images/github.svg");
 }
-  .btn-github:hover {
-    background-color: #444444; 
-  }
-  .btn-github:active {
-    background-color: #101010; 
-  }
+
+.btn-github:hover {
+  background-color: #444444; 
+}
+
+.btn-github:active {
+  background-color: #101010; 
+}
+
+//

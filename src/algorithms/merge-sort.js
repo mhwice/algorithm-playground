@@ -24,3 +24,5 @@ const mergeSort = (unsortedArray) => {
 };
 
 export { mergeSort as default };
+
+// ! mergeSort needs to actually return the sorted array...does it?

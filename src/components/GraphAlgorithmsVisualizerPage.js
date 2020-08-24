@@ -17,6 +17,8 @@ import {
 	removeNode,
 	isWeightValid
 } from "../utils/graphManipulation";
+import SelectBox from "./SelectBox";
+import MediaButtons from "./MediaButtons";
 
 const ROWS = 9;
 const COLUMNS = 9;
@@ -24,25 +26,25 @@ const COLUMNS = 9;
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
-// const IS_WEIGHTED = true;
-// const IS_DIRECTED = true;
-// const ALGORITHM = "dijkstra";
-// const TITLE = "Dijkstra's Algorithm";
-// const headings = [
-// 	["Node", "Reached By"],
-// 	["Node", "Lowest Cost to Reach Node"],
-// 	["Node", "Priority"]
-// ];
-// const titles = ["Path Table", "Cost Table", "Priority Queue"];
-// const INITIAL_HISTORY = [[], [], [], []];
+const IS_WEIGHTED = true;
+const IS_DIRECTED = true;
+const ALGORITHM = "dijkstra";
+const TITLE = "Dijkstra's Algorithm";
+const headings = [
+	["Node", "Reached By"],
+	["Node", "Lowest Cost to Reach Node"],
+	["Node", "Priority"]
+];
+const titles = ["Path Table", "Cost Table", "Priority Queue"];
+const INITIAL_HISTORY = [[], [], [], []];
 
-const IS_WEIGHTED = false;
-const IS_DIRECTED = false;
-const ALGORITHM = "dfs";
-const TITLE = "Depth First Search";
-const headings = [["Node", "Reached By"]];
-const titles = ["Path Table"];
-const INITIAL_HISTORY = [[], []];
+// const IS_WEIGHTED = false;
+// const IS_DIRECTED = false;
+// const ALGORITHM = "dfs";
+// const TITLE = "Depth First Search";
+// const headings = [["Node", "Reached By"]];
+// const titles = ["Path Table"];
+// const INITIAL_HISTORY = [[], []];
 
 const GraphAlgorithmsVisualizerPage = () => {
 	// Graph model
@@ -328,34 +330,10 @@ const GraphAlgorithmsVisualizerPage = () => {
 	// ====================== JSX =====================
 
 	return (
-		<div>
-			<h1>{TITLE}</h1>
-			<div className="button-row">
-				{!isEditing && (
-					<div className="media-button-container">
-						<button className="media-button" onClick={moveBackward} type="button">
-							{"<-"}
-						</button>
-						<button className="media-button" onClick={playPauseToggle} type="button">
-							{isPlaying ? "Pause" : "Play"}
-						</button>
-						<button className="media-button" onClick={moveForward} type="button">
-							{"->"}
-						</button>
-						<button className="media-button" onClick={resetAll} type="button">
-							Reset
-						</button>
-					</div>
-				)}
-				<div className="media-button-container">
-					<button className="media-button edit-button" onClick={editGraph} type="button">
-						{isEditing ? "Done" : "Edit"}
-					</button>
-				</div>
-			</div>
-
-			<div className="window-container">
-				<div className="window">
+		<div className="wrapper">
+			<SelectBox className="header" />
+			<div className="content window-container">
+				<div id="table-window" className="window">
 					{isEditing ? (
 						<Editor
 							list={graphToEdgeList(graph)}
@@ -374,10 +352,20 @@ const GraphAlgorithmsVisualizerPage = () => {
 						</>
 					)}
 				</div>
-				<div className="window">
+				<div id="graph-window" className="window">
 					<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} isEditing={isEditing} />
 				</div>
 			</div>
+
+			<MediaButtons
+				className="footer"
+				moveForward={moveForward}
+				playPauseToggle={playPauseToggle}
+				moveBackward={moveBackward}
+				resetAll={resetAll}
+				isEditing={isEditing}
+				isPlaying={isPlaying}
+			/>
 		</div>
 	);
 };
