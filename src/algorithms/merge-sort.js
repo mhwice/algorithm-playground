@@ -1,14 +1,59 @@
-const merge = (leftArray, rightArray) => {
+function* merge(leftArray, rightArray) {
 	const newArray = [];
+	const animations = [];
 
+	const startIndex = leftArray[0][2] < rightArray[0][2] ? leftArray[0][2] : rightArray[0][2];
+	// console.log(" ");
 	while (leftArray.length > 0 && rightArray.length > 0) {
-		newArray.push(leftArray[0] < rightArray[0] ? leftArray.shift() : rightArray.shift());
+		// console.log("leftArray", JSON.stringify(leftArray));
+		// console.log("rightArray", JSON.stringify(rightArray));
+		if (leftArray[0][0] < rightArray[0][0]) {
+			const val = leftArray.shift();
+			const barId = val[1];
+			const positionToInsertAt = startIndex + newArray.length;
+			const numSpaces = positionToInsertAt - val[2];
+			// console.log(`Moving ${val[0]} (${startIndex} + ${newArray.length} - ${val[2]}) = ${numSpaces} spaces`);
+			val[2] += numSpaces;
+			animations.push([barId, numSpaces]);
+			newArray.push(val);
+		} else {
+			const val = rightArray.shift();
+			const barId = val[1];
+			const positionToInsertAt = startIndex + newArray.length;
+			const numSpaces = positionToInsertAt - val[2];
+			// console.log(`Moving ${val[0]} (${startIndex} + ${newArray.length} - ${val[2]}) = ${numSpaces} spaces`);
+			val[2] += numSpaces;
+			animations.push([barId, numSpaces]);
+			newArray.push(val);
+		}
 	}
 
-	return leftArray.length === 0 ? newArray.concat(rightArray) : newArray.concat(leftArray);
-};
+	// console.log("---");
 
-const mergeSort = (unsortedArray) => {
+	let added = 0;
+	if (leftArray.length === 0) {
+		rightArray.forEach((item) => {
+			const numSpaces = startIndex + newArray.length + added - item[2];
+			// console.log(`Moving (${item[0]} ${startIndex} + ${newArray.length} - ${item[2]}) = ${numSpaces} spaces`);
+			item[2] += numSpaces;
+			animations.push([item[1], numSpaces]);
+			added += 1;
+		});
+	} else {
+		leftArray.forEach((item) => {
+			const numSpaces = startIndex + newArray.length + added - item[2];
+			// console.log(`Moving (${item[0]} ${startIndex} + ${newArray.length} - ${item[2]}) = ${numSpaces} spaces`);
+			item[2] += numSpaces;
+			animations.push([item[1], numSpaces]);
+			added += 1;
+		});
+	}
+	yield animations;
+
+	return leftArray.length === 0 ? newArray.concat(rightArray) : newArray.concat(leftArray);
+}
+
+function* mergeSort(unsortedArray) {
 	if (unsortedArray.length <= 1) {
 		return unsortedArray;
 	}
@@ -17,12 +62,11 @@ const mergeSort = (unsortedArray) => {
 	const unsortedLeftArray = unsortedArray.slice(0, middle);
 	const unsortedRightArray = unsortedArray.slice(middle);
 
-	const sortedLeftArray = mergeSort(unsortedLeftArray);
-	const sortedRightArray = mergeSort(unsortedRightArray);
+	const sortedLeftArray = yield* mergeSort(unsortedLeftArray);
+	const sortedRightArray = yield* mergeSort(unsortedRightArray);
 
-	return merge(sortedLeftArray, sortedRightArray);
-};
+	const mergedArray = yield* merge(sortedLeftArray, sortedRightArray);
+	return mergedArray;
+}
 
 export { mergeSort as default };
-
-// ! mergeSort needs to actually return the sorted array...does it?

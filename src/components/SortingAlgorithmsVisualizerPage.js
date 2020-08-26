@@ -1,37 +1,89 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import $ from "jquery";
 import mergeSort from "../algorithms/merge-sort";
-import mergeSortEfficient from "../algorithms/merge-sort-efficient";
-
-// ! STEP 1) Display bars with different heights
+import generateArrayWithIndicies from "../utils/generateRandomArrayWithIndicies";
 
 const SortingAlgorithmsVisualizerPage = () => {
-	const getRandomNumber = (min = 1, max = 1000) => Math.floor(Math.random() * (max - min + 1) + min);
+	const initialBars = () => generateArrayWithIndicies();
+	const [bars] = useState(initialBars);
+	const initialAlgorithmProcess = () => mergeSort(bars);
+	const [algorithmProcess] = useState(initialAlgorithmProcess);
 
-	const generateRandomArray = () => {
-		const randomArray = [];
-		for (let i = 0; i < 10; i += 1) {
-			randomArray.push(getRandomNumber());
-		}
-		return randomArray;
+	// const animateBars = (index1, index2) => {
+	// 	console.log(`Index #1 = ${index1}`);
+	// 	console.log(`Index #2 = ${index2}`);
+	// 	const div1 = $(".bar").eq(index1);
+	// 	const div2 = $(".bar").eq(index2);
+	// 	const div3 = $(".bar").eq(index1 + 1);
+	// 	const distance = div1.offset().left - div2.offset().left;
+
+	// 	$.when(
+	// 		div1.animate(
+	// 			{
+	// 				left: -distance
+	// 			},
+	// 			1000
+	// 		),
+	// 		div2.animate(
+	// 			{
+	// 				left: distance
+	// 			},
+	// 			1000
+	// 		)
+	// 	).done(() => {
+	// 		div2.css("left", "0px");
+	// 		div1.css("left", "0px");
+	// 		if (index2 - index1 === 1) {
+	// 			div2.insertBefore(div1);
+	// 		} else if (index2 - index1 > 1) {
+	// 			div2.insertBefore(div3);
+	// 		}
+	// 	});
+	// };
+
+	// const animateBar = (fromIndex, toIndex) => {
+	// 	const div1 = $(".bar").eq(fromIndex);
+	// 	const div2 = $(".bar").eq(toIndex);
+	// 	const distance = div1.offset().left - div2.offset().left;
+
+	// 	$.when(
+	// 		div1.animate(
+	// 			{
+	// 				left: -distance
+	// 			},
+	// 			1000
+	// 		)
+	// 	).done(() => {
+	// 		div1.css("left", "0px");
+	// 		div2.insertBefore(div1);
+	// 	});
+	// };
+
+	// https://jsfiddle.net/jksefc24/3/
+
+	const animateBars = (animations) => {
+		animations.forEach((animation) => {
+			if (animation[1] !== 0) {
+				const fromDiv = $(".bar").eq(animation[0]);
+				fromDiv.animate(
+					{
+						left: `+=${animation[1] * 70}px`
+					},
+					1000
+				);
+			}
+		});
 	};
 
-	const [bars, setBars] = useState([]);
-
-	useEffect(() => {
-		setBars(generateRandomArray());
-	}, []);
-
 	const sortBars = () => {
-		const t0 = performance.now();
-		const res1 = mergeSort(bars);
-		console.log("res1", res1);
-		const t1 = performance.now();
-		console.log(`Call to mergeSort took ${Math.round((t1 - t0 + Number.EPSILON) * 100) / 100} milliseconds.`);
-
-		// t0 = performance.now();
-		// mergeSortEfficient(bars, new Array(bars.length), 0, bars.length - 1);
-		// t1 = performance.now();
-		// console.log(`Call to efficient mergeSort took ${Math.round((t1 - t0 + Number.EPSILON) * 100) / 100} milliseconds.`);
+		const result = algorithmProcess.next();
+		if (!result.done) {
+			const { value } = result;
+			// console.log(value);
+			animateBars(value);
+		} else {
+			console.log(`Final Result: ${result.value}`);
+		}
 	};
 
 	return (
@@ -42,8 +94,8 @@ const SortingAlgorithmsVisualizerPage = () => {
 			<div className="bar-container">
 				{bars.map((bar, barIndex) => {
 					return (
-						<div className="bar" key={barIndex} style={{ height: bar }}>
-							{bar}
+						<div className="bar" key={barIndex}>
+							{bar[0]}
 						</div>
 					);
 				})}
@@ -53,3 +105,5 @@ const SortingAlgorithmsVisualizerPage = () => {
 };
 
 export { SortingAlgorithmsVisualizerPage as default };
+
+// style={{ height: bar[0] }}
