@@ -5,7 +5,6 @@ const generateArrayWithIndicies = () => {
 	for (let i = 0; i < 8; i += 1) {
 		randomArray.push([getRandomNumber(), i, i]);
 	}
-	console.log(JSON.stringify(randomArray, null, 2));
 	return randomArray;
 };
 

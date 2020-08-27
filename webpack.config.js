@@ -61,6 +61,11 @@ module.exports = (env) => {
 			contentBase: path.join(__dirname, "public"),
 			historyApiFallback: true,
 			publicPath: "/dist/"
+		},
+		resolve: {
+			alias: {
+				"jquery-ui": "jquery-ui-dist/jquery-ui.js"
+			}
 		}
 	};
 };
