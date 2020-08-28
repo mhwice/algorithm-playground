@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import $ from "jquery";
 import mergeSort from "../algorithms/merge-sort";
 import generateArrayWithIndicies from "../utils/generateRandomArrayWithIndicies";
 import MediaButtons from "./MediaButtons";
@@ -7,8 +8,9 @@ import useInterval from "../hooks/useInterval";
 import animateBars, { undoAnimations } from "../utils/animations";
 
 const INITIAL_HISTORY = [];
+const MAX_BAR_SIZE = Math.round($(window).height() / 4);
 const SortingAlgorithmsVisualizerPage = () => {
-	const initialBars = () => generateArrayWithIndicies();
+	const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
 	const [bars] = useState(initialBars);
 	const initialAlgorithmProcess = () => mergeSort(bars);
 	const [algorithmProcess] = useState(initialAlgorithmProcess);
@@ -105,14 +107,16 @@ const SortingAlgorithmsVisualizerPage = () => {
 				isEditing={isEditing}
 				isPlaying={isPlaying}
 			/>
-			<div className="bar-container">
-				{bars.map((bar, barIndex) => {
-					return (
-						<div className="bar" key={barIndex}>
-							{bar[0]}
-						</div>
-					);
-				})}
+			<div className="bar-wrapper">
+				<div className="bars">
+					{bars.map((bar, barIndex) => {
+						return (
+							<div className="bar" key={barIndex} style={{ height: `${bar[0]}px` }}>
+								<p className="bar-text">{bar[0]}</p>
+							</div>
+						);
+					})}
+				</div>
 			</div>
 		</div>
 	);

@@ -1,6 +1,7 @@
 import $ from "jquery";
 import "jquery-ui";
 
+const HEIGHT = Math.round($(window).height() / 4);
 const animateBarsUp = (indicies) => {
 	return new Promise((resolve) => {
 		indicies.forEach((index, i) => {
@@ -8,7 +9,7 @@ const animateBarsUp = (indicies) => {
 				.eq(index)
 				.animate(
 					{
-						top: "-=70px"
+						top: `-=${HEIGHT}px`
 					},
 					{
 						duration: 1000
@@ -16,7 +17,7 @@ const animateBarsUp = (indicies) => {
 				)
 				.animate(
 					{
-						backgroundColor: "red"
+						backgroundColor: "#61bffc"
 					},
 					{
 						duration: 500,
@@ -40,7 +41,7 @@ const animateSingleBarDownWithPromise = (transitionDownAnimations, transitionUpI
 				.animate(
 					{
 						left: `+=${steps * 70}px`,
-						top: "+=70px"
+						top: `+=${HEIGHT}px`
 					},
 					{
 						duration: 1000,
@@ -61,63 +62,6 @@ const animateSingleBarDownWithPromise = (transitionDownAnimations, transitionUpI
 	});
 };
 
-// const animateBarsDownWithPromise = (transitionDownAnimations, transitionUpIndicies) => {
-// 	return new Promise((resolve) => {
-// 		transitionDownAnimations.forEach((transitionDownAnimation, animationIndex) => {
-// 			const [index, steps] = transitionDownAnimation;
-// 			$(".bar")
-// 				.eq(index)
-// 				.animate(
-// 					{
-// 						left: `+=${steps * 70}px`,
-// 						top: "+=70px"
-// 					},
-// 					{
-// 						duration: 2000,
-// 						complete: () => {
-// 							if (animationIndex === transitionDownAnimations.length - 1) {
-// 								animateBarsUp(transitionUpIndicies).then(() => {
-// 									resolve();
-// 								});
-// 							}
-// 						}
-// 					}
-// 				);
-// 		});
-// 	});
-// };
-
-// const animateBarsDown = (transitionDownAnimations, transitionUpIndicies) => {
-// 	if (transitionDownAnimations.length > 0) {
-// 		const [index, steps] = transitionDownAnimations[0];
-// 		$.when(
-// 			$(".bar").eq(index).animate(
-// 				{
-// 					backgroundColor: "green"
-// 				},
-// 				500
-// 			),
-// 			$(".bar")
-// 				.eq(index)
-// 				.animate(
-// 					{
-// 						left: `+=${steps * 70}px`,
-// 						top: "+=70px"
-// 					},
-// 					1000
-// 				)
-// 		).done(() => {
-// 			if (transitionDownAnimations.length > 1) {
-// 				animateBarsDown(transitionDownAnimations.slice(1), transitionUpIndicies);
-// 			} else {
-// 				animateBarsUp(transitionUpIndicies).then(() => {
-// 					console.log("finished");
-// 				});
-// 			}
-// 		});
-// 	}
-// };
-
 const animateBarsStartColor = (transitionDownAnimations, transitionUpIndicies, startColorIndicies) => {
 	return new Promise((resolve) => {
 		startColorIndicies.forEach((barIndex, index) => {
@@ -125,7 +69,7 @@ const animateBarsStartColor = (transitionDownAnimations, transitionUpIndicies, s
 				.eq(barIndex)
 				.animate(
 					{
-						backgroundColor: "green"
+						backgroundColor: "#D596FF"
 					},
 					{
 						duration: 500,
@@ -154,7 +98,7 @@ const undoAnimations = (animations, barsUsed) => {
 	return new Promise((resolve) => {
 		animations.forEach((animation, animationIndex) => {
 			const [barIndex, steps] = animation;
-			const color = barsUsed.includes(barIndex) ? "red" : "yellow";
+			const color = barsUsed.includes(barIndex) ? "#61bffc" : "#C1C6CC";
 			$(".bar")
 				.eq(barIndex)
 				.animate(
