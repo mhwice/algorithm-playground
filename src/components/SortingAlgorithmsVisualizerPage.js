@@ -1,124 +1,110 @@
 import React, { useState } from "react";
-import $ from "jquery";
-import "jquery-ui";
 import mergeSort from "../algorithms/merge-sort";
 import generateArrayWithIndicies from "../utils/generateRandomArrayWithIndicies";
+import MediaButtons from "./MediaButtons";
+import useHistory from "../hooks/useHistory";
+import useInterval from "../hooks/useInterval";
+import animateBars, { undoAnimations } from "../utils/animations";
 
+const INITIAL_HISTORY = [];
 const SortingAlgorithmsVisualizerPage = () => {
 	const initialBars = () => generateArrayWithIndicies();
 	const [bars] = useState(initialBars);
 	const initialAlgorithmProcess = () => mergeSort(bars);
 	const [algorithmProcess] = useState(initialAlgorithmProcess);
+	const [isPlaying, setIsPlaying] = useState(false);
+	const [isAnimating, setIsAnimating] = useState(false);
+	const [isEditing] = useState(false);
+	const [history, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }] = useHistory([
+		INITIAL_HISTORY
+	]);
 
-	const animateBarsUp = (indicies) => {
-		indicies.forEach((index) => {
-			$(".bar").eq(index).animate(
-				{
-					top: "-=70px"
-				},
-				1000
-			);
-			$(".bar").eq(index).animate(
-				{
-					backgroundColor: "red"
-				},
-				500
-			);
-		});
-	};
-
-	const animateBarsDown = (transitionDownAnimations, transitionUpIndicies) => {
-		if (transitionDownAnimations.length > 0) {
-			const [index, steps] = transitionDownAnimations[0];
-			$.when(
-				$(".bar").eq(index).animate(
-					{
-						backgroundColor: "green"
-					},
-					500
-				),
-				$(".bar")
-					.eq(index)
-					.animate(
-						{
-							left: `+=${steps * 70}px`,
-							top: "+=70px"
-						},
-						1000
-					)
-			).done(() => {
-				if (transitionDownAnimations.length > 1) {
-					animateBarsDown(transitionDownAnimations.slice(1), transitionUpIndicies);
-				} else {
-					animateBarsUp(transitionUpIndicies);
-				}
-			});
-		}
-	};
-
-	const doneFunc = (index, finalIndex, transitionDownAnimations, transitionUpIndicies) => {
-		if (index === finalIndex) {
-			animateBarsDown(transitionDownAnimations, transitionUpIndicies);
-		}
-	};
-
-	const animateBarsStartColor = (transitionDownAnimations, transitionUpIndicies, startColorIndicies) => {
-		startColorIndicies.forEach((barIndex, index) => {
-			$(".bar")
-				.eq(barIndex)
-				.animate(
-					{
-						backgroundColor: "green"
-					},
-					{
-						duration: 500,
-						complete: doneFunc(index, startColorIndicies.length - 1, transitionDownAnimations, transitionUpIndicies)
-					}
-				);
-		});
-
-		// if (startColorIndicies.length > 0) {
-		// 	const index = startColorIndicies[0];
-		// 	$.when(
-		// 		$(".bar").eq(index).animate(
-		// 			{
-		// 				backgroundColor: "green"
-		// 			},
-		// 			{
-		// 				duration: 500,
-		// 				queue: true
-		// 			}
-		// 		)
-		// 	).done(() => {
-		// 		if (startColorIndicies.length > 1) {
-		// 			animateBarsStartColor(transitionDownAnimations, transitionUpIndicies, startColorIndicies.slice(1));
-		// 		} else {
-		// 			animateBarsDown(transitionDownAnimations, transitionUpIndicies);
-		// 		}
-		// 	});
-		// }
-	};
-
-	const animateBars = (transitionDownAnimations, transitionUpIndicies, startColorIndicies) => {
-		animateBarsStartColor(transitionDownAnimations, transitionUpIndicies, startColorIndicies);
-	};
-
-	const sortBars = () => {
+	const takeStep = () => {
 		const result = algorithmProcess.next();
 		if (!result.done) {
 			const { value: animations } = result;
 			const indicies = animations.map((animation) => animation[0]);
-			animateBars(animations, indicies, [...indicies]);
+			setHistory([animations, indicies, [...indicies]]);
+			setIsAnimating(true);
+			animateBars(animations, indicies, [...indicies]).then(() => {
+				setIsAnimating(false);
+			});
 		} else {
+			setIsPlaying(false);
 			console.log(`Final Result: ${result.value}`);
 		}
 	};
 
+	const redoStep = () => {
+		setIsAnimating(true);
+		animateBars(...history.future[0]).then(() => {
+			setIsAnimating(false);
+		});
+		redoHistory();
+	};
+
+	const undoStep = () => {
+		if (canUndoHistory) {
+			const barsUsed = [];
+			history.past.forEach((past) => {
+				const pastAnimations = past[0];
+				pastAnimations.forEach((animation) => {
+					const barId = animation[0];
+					if (!barsUsed.includes(barId)) {
+						barsUsed.push(barId);
+					}
+				});
+			});
+			setIsAnimating(true);
+			undoAnimations(history.present[0], barsUsed).then(() => {
+				setIsAnimating(false);
+			});
+		}
+		undoHistory();
+	};
+
+	const resetAll = () => {
+		console.log(history);
+	};
+
+	const moveBackward = () => {
+		if (!isAnimating) {
+			undoStep();
+		}
+	};
+
+	// Moves forward one step
+	const moveForward = () => {
+		if (!isAnimating) {
+			if (canRedoHistory) {
+				redoStep();
+			} else {
+				takeStep();
+			}
+		}
+	};
+
+	// Toggles the value of isPlaying
+	const playPauseToggle = () => {
+		setIsPlaying((prev) => !prev);
+	};
+
+	useInterval(() => {
+		if (isPlaying && !isAnimating) {
+			moveForward();
+		}
+	}, 500);
+
 	return (
 		<div>
-			<button className="run-button" onClick={sortBars} type="button">
-				Run Algorithm
-			</button>
+			<MediaButtons
+				moveBackward={moveBackward}
+				playPauseToggle={playPauseToggle}
+				moveForward={moveForward}
+				resetAll={resetAll}
+				isEditing={isEditing}
+				isPlaying={isPlaying}
+			/>
 			<div className="bar-container">
 				{bars.map((bar, barIndex) => {
 					return (

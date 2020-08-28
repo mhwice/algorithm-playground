@@ -21,17 +21,6 @@ const historyReducer = (state, action) => {
 			if (action.newPresent === present) {
 				return state;
 			}
-
-			// const allNodes = [
-			// 	...present[3],
-			// 	...action.newPresent[2].map((item) => item[0]).filter((item) => !present[3].includes(item))
-			// ];
-
-			// return {
-			// 	past: [...past, present],
-			// 	present: [...action.newPresent, ...allNodes],
-			// 	future: []
-			// };
 			return {
 				past: [...past, present],
 				present: [...action.newPresent],
