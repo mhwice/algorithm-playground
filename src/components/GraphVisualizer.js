@@ -337,7 +337,7 @@ const GraphVisualizer = () => {
 	return (
 		<div className="wrapper">
 			<SelectBox className="header" handleClick={handleClick} items={["Depth First Search", "Dijkstras Algorithm"]} />
-			<div className="content window-container">
+			<div className="window-container">
 				<div id="table-window" className="window">
 					{isEditing ? (
 						<Editor
