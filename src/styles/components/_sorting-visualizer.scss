@@ -1,15 +1,19 @@
 .bar-wrapper {
   width: 100vw;
-  height: 20vw;
+  height: 40vh;
   text-align: center;
   position: relative;
+  justify-content: center;
+  // background-color: darkslateblue;
 }
 
 .bars {
   position: absolute;
   bottom: 0;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
   width: 100vw;
+  // background-color: palegreen;
 }
 
 .bar {
@@ -29,5 +33,23 @@
   right: 0; 
   margin: 5px auto;
   width: 50px;
+  bottom: 0;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.content {
+  flex-grow: 1;
+  max-height: initial;
+  // background-color: orange;
+}
+
+.footer {
+  position: fixed;
   bottom: 0;
 }

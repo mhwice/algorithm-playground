@@ -4,6 +4,7 @@
 
 .media-button-container {
   margin: 0 auto;
+  margin-bottom: 5px;
   width: 400px;
   display: flex;
   justify-content: space-evenly;
@@ -42,5 +43,12 @@
 @media (max-width: 1200px) {
   .media-button-container {
     width: 100%;
+  }
+}
+
+@media (min-width: 1200px) {
+  #table-button {
+    display: none;
+    visibility: hidden;
   }
 }

@@ -1,7 +1,7 @@
 import $ from "jquery";
 import "jquery-ui";
 
-const HEIGHT = Math.round($(window).height() / 4);
+const HEIGHT = Math.round($(window).height() / 3) + 20;
 const animateBarsUp = (indicies) => {
 	return new Promise((resolve) => {
 		indicies.forEach((index, i) => {
@@ -119,4 +119,14 @@ const undoAnimations = (animations, barsUsed) => {
 	});
 };
 
-export { animateBars as default, undoAnimations };
+const clearAnimations = () => {
+	$(".bar").animate(
+		{
+			left: "0px",
+			backgroundColor: "#C1C6CC"
+		},
+		0
+	);
+};
+
+export { animateBars as default, undoAnimations, clearAnimations };

@@ -1,0 +1,15 @@
+.bar-input {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  width: 30vw;
+}
+
+.bar-input:focus {
+  outline: none;
+  border: 1px solid red;
+}
+
+.sorting-editor {
+  text-align: center;
+}

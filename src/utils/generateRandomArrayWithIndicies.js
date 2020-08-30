@@ -2,15 +2,16 @@ const getRandomNumber = (min = 50, max = 500) => Math.floor(Math.random() * (max
 
 const generateArrayWithIndicies = (maxSize) => {
 	const randomArray = [];
-	for (let i = 0; i < 25; i += 1) {
-		randomArray.push([getRandomNumber(maxSize / 10, maxSize), i, i]);
+	for (let i = 0; i < 8; i += 1) {
+		randomArray.push([getRandomNumber(28, maxSize), i, i]);
 	}
 	return randomArray;
 	// return [
-	// 	[70, 0, 0],
-	// 	[50, 1, 1],
-	// 	[30, 2, 2],
-	// 	[10, 3, 3]
+	// 	[1, 0, 0],
+	// 	[2, 1, 1],
+	// 	[28, 2, 2],
+	// 	[0, 3, 3],
+	// 	[maxSize, 4, 4]
 	// ];
 };
 

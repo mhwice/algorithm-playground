@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import $ from "jquery";
 import AlgorithmManager from "../algorithms/AlgorithmManager";
 import Graph from "./Graph";
 import Table from "./Table";
@@ -19,34 +20,17 @@ import {
 } from "../utils/graphManipulation";
 import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
+import getSettings from "../settings/graph-algorithm-settings";
 
-const ROWS = 9;
-const COLUMNS = 9;
+const ROWS = 5;
+const COLUMNS = 5;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
-const IS_WEIGHTED = true;
-const IS_DIRECTED = true;
-const ALGORITHM = "dijkstra";
-const TITLE = "Dijkstra's Algorithm";
-const headings = [
-	["Node", "Reached By"],
-	["Node", "Lowest Cost to Reach Node"],
-	["Node", "Priority"]
-];
-const titles = ["Path Table", "Cost Table", "Priority Queue"];
-const INITIAL_HISTORY = [[], [], [], []];
+const GraphVisualizer = () => {
+	let { IS_WEIGHTED, IS_DIRECTED, ALGORITHM, headings, titles, INITIAL_HISTORY } = getSettings("2");
 
-// const IS_WEIGHTED = false;
-// const IS_DIRECTED = false;
-// const ALGORITHM = "dfs";
-// const TITLE = "Depth First Search";
-// const headings = [["Node", "Reached By"]];
-// const titles = ["Path Table"];
-// const INITIAL_HISTORY = [[], []];
-
-const GraphAlgorithmsVisualizerPage = () => {
 	// Graph model
 	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ROWS, COLUMNS);
 	const [graph, setGraph] = useState(initialGraph);
@@ -71,6 +55,8 @@ const GraphAlgorithmsVisualizerPage = () => {
 
 	// History
 	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
+
+	const [selected, setSelected] = useState("3");
 
 	// ================ Steps =============
 
@@ -327,11 +313,30 @@ const GraphAlgorithmsVisualizerPage = () => {
 			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, node.data.id));
 		}
 	};
+
+	// ===================== SelectBox ==================
+
+	const handleClick = (radio) => {
+		const { value } = radio.target;
+		if (selected !== value) {
+			setSelected(value);
+			const settings = getSettings(value);
+			IS_WEIGHTED = settings.IS_WEIGHTED;
+			IS_DIRECTED = settings.IS_DIRECTED;
+			ALGORITHM = settings.ALGORITHM;
+			headings = settings.headings;
+			titles = settings.titles;
+			INITIAL_HISTORY = settings.INITIAL_HISTORY;
+			resetAll();
+			setGraph(initialGraph);
+		}
+	};
+
 	// ====================== JSX =====================
 
 	return (
 		<div className="wrapper">
-			<SelectBox className="header" />
+			<SelectBox className="header" handleClick={handleClick} items={["Depth First Search", "Dijkstras Algorithm"]} />
 			<div className="content window-container">
 				<div id="table-window" className="window">
 					{isEditing ? (
@@ -363,11 +368,22 @@ const GraphAlgorithmsVisualizerPage = () => {
 				playPauseToggle={playPauseToggle}
 				moveBackward={moveBackward}
 				resetAll={resetAll}
+				editorToggle={editGraph}
 				isEditing={isEditing}
 				isPlaying={isPlaying}
+				addAdditionalButton
+				additionalButtonCallback={() => {
+					if (Number($("#graph-window").css("width").slice(0, -2)) > 0) {
+						$("#graph-window").css("width", "0vw");
+						$("#table-window").css("width", "90vw");
+					} else {
+						$("#graph-window").css("width", "90vw");
+						$("#table-window").css("width", "0vw");
+					}
+				}}
 			/>
 		</div>
 	);
 };
 
-export default GraphAlgorithmsVisualizerPage;
+export default GraphVisualizer;
