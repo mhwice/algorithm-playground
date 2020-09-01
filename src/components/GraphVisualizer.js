@@ -22,8 +22,8 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../settings/graph-algorithm-settings";
 
-const ROWS = 5;
-const COLUMNS = 5;
+const ROWS = 7;
+const COLUMNS = 7;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
@@ -336,34 +336,35 @@ const GraphVisualizer = () => {
 
 	return (
 		<div className="wrapper">
-			<SelectBox className="header" handleClick={handleClick} items={["Depth First Search", "Dijkstras Algorithm"]} />
-			<div className="window-container">
-				<div id="table-window" className="window">
-					{isEditing ? (
-						<Editor
-							list={graphToEdgeList(graph)}
-							addEdge={addEdgeCallback}
-							removeEdge={removeEdgeCallback}
-							updateEdge={updateEdgeCallback}
-							updateStartNode={updateStartNode}
-							updateEndNode={updateEndNode}
-							isWeighted={IS_WEIGHTED}
-						/>
-					) : (
-						<>
-							{history.present.slice(1).map((data, idx) => {
-								return <Table key={idx} title={titles[idx]} headings={headings[idx]} data={data} />;
-							})}
-						</>
-					)}
-				</div>
-				<div id="graph-window" className="window">
-					<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} isEditing={isEditing} />
+			<SelectBox handleClick={handleClick} items={["Depth First Search", "Dijkstras Algorithm"]} />
+			<div className="content">
+				<div className="window-container">
+					<div id="table-window" className="window table-window">
+						{isEditing ? ( // isEditing
+							<Editor
+								list={graphToEdgeList(graph)}
+								addEdge={addEdgeCallback}
+								removeEdge={removeEdgeCallback}
+								updateEdge={updateEdgeCallback}
+								updateStartNode={updateStartNode}
+								updateEndNode={updateEndNode}
+								isWeighted={IS_WEIGHTED}
+							/>
+						) : (
+							<>
+								{history.present.slice(1).map((data, idx) => {
+									return <Table key={idx} title={titles[idx]} headings={headings[idx]} data={data} />;
+								})}
+							</>
+						)}
+					</div>
+					<div id="graph-window" className="window">
+						<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} isEditing={isEditing} />
+					</div>
 				</div>
 			</div>
 
 			<MediaButtons
-				className="footer"
 				moveForward={moveForward}
 				playPauseToggle={playPauseToggle}
 				moveBackward={moveBackward}
@@ -373,13 +374,8 @@ const GraphVisualizer = () => {
 				isPlaying={isPlaying}
 				addAdditionalButton
 				additionalButtonCallback={() => {
-					if (Number($("#graph-window").css("width").slice(0, -2)) > 0) {
-						$("#graph-window").css("width", "0vw");
-						$("#table-window").css("width", "90vw");
-					} else {
-						$("#graph-window").css("width", "90vw");
-						$("#table-window").css("width", "0vw");
-					}
+					$("#graph-window").toggleClass("graph-window");
+					$("#table-window").toggleClass("table-window");
 				}}
 			/>
 		</div>

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const EditorItem = ({ fromNode, toNode, weight, removeEdge, updateEdge, id, isWeighted }) => {
 	return (
 		<div className="list-item">
-			<p className="tag-text">From:</p>
+			<span className="tag-text">From:</span>
 			<input
 				className="editor-item-input"
 				onChange={(e) => updateEdge(id, { fromNode: e.target.value, toNode, weight })}
@@ -12,7 +12,7 @@ const EditorItem = ({ fromNode, toNode, weight, removeEdge, updateEdge, id, isWe
 				value={fromNode}
 				required
 			/>
-			<p className="tag-text">To:</p>
+			<span className="tag-text">To:</span>
 			<input
 				className="editor-item-input"
 				onChange={(e) => updateEdge(id, { fromNode, toNode: e.target.value, weight })}
@@ -23,7 +23,7 @@ const EditorItem = ({ fromNode, toNode, weight, removeEdge, updateEdge, id, isWe
 
 			{isWeighted && (
 				<>
-					<p className="tag-text">Weight:</p>
+					<span className="tag-text">Weight:</span>
 					<input
 						className="editor-item-input"
 						onChange={(e) => updateEdge(id, { fromNode, toNode, weight: e.target.value })}
@@ -35,7 +35,7 @@ const EditorItem = ({ fromNode, toNode, weight, removeEdge, updateEdge, id, isWe
 			)}
 
 			<button className="remove-button" onClick={() => removeEdge(id)} type="button">
-				Remove Edge
+				<i className="fas fa-trash" />
 			</button>
 		</div>
 	);

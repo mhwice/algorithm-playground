@@ -1,10 +1,13 @@
 .button-row {
   width: 100%;
+  margin-bottom: 5px;
+  position: fixed;
+  bottom: 0;
 }
 
 .media-button-container {
   margin: 0 auto;
-  margin-bottom: 5px;
+  height: 90px;
   width: 400px;
   display: flex;
   justify-content: space-evenly;
@@ -40,13 +43,13 @@
   }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 768px) {
   .media-button-container {
     width: 100%;
   }
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 769px) {
   #table-button {
     display: none;
     visibility: hidden;

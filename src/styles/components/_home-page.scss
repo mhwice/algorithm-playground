@@ -1,10 +1,22 @@
+// .bg {
+//   background-color: #FFFFFF;
+//   height: 100vh;
+//   background-image: url("../../public/images/wave.png");
+//   background-size: cover;
+//   background-position: top;
+//   position: relative;
+// }
+
 .bg {
   background-color: #FFFFFF;
-  height: 100vh;
   background-image: url("../../public/images/wave.png");
   background-size: cover;
   background-position: top;
-  position: relative;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .link {

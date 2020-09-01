@@ -1,20 +1,6 @@
-.window-container {
-  width: 100vw;
-  display: flex;
-  justify-content: space-evenly;
-  // align-items: center;
-  align-items: stretch;
-  margin: 30px 0;
-  flex-wrap: wrap;
-  // background-color: red;
-  flex-grow: 1;
-  max-height: initial;
-}
-
 .window {
-  width: 45vw;
-  // height: 100%;
-  // height: auto;
+  height: 100%;
+  width: 45%;
   background-color: #FFFFFF;
   border-radius: 10px;
   display: flex;
@@ -23,58 +9,59 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 1200px) {
-  #graph-window {
-    width: 90vw;
-  }
-
-  .window-container {
-    justify-content: center;
-  }
-
-  #table-window {
-    width: 0vw;
-  }
-}
-
 .wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-
-.header {
-  opacity: 30%;
-}
-
-// .content {
-//   flex-grow: 1;
-//   max-height: initial;
-//   background-color: darkkhaki;
-// }
-
-.footer {
-  opacity: 30%;
-  position: fixed;
+  position: fixed;  
+  top: 0;
+  right: 0;
   bottom: 0;
+  left: 0;
 }
 
-/*
+.window-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  padding: 20px 0;
+  // margin: 0 20px;   
+}
 
-  when the table button is clicked
+.content {
+  position: fixed;  
+  top: 50px;
+  right: 0;
+  bottom: 95px;
+  left: 0;
+}
 
-  #graph-window {
-    width: 0vw;
+.graph-window {
+  display: flex;
+}
+
+.table-window {
+  display: flex;
+}
+
+@media (max-width: 768px) {
+  .window {
+    width: 90%;
   }
 
-  .window-container {
-    justify-content: center;
+  .table-window {
+    display: none;
   }
 
-  #table-window {
-    width: 90vw;
+  .graph-window {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .graph-window {
+    display: flex;
   }
 
-
-*/
+  .table-window {
+    display: flex;
+  }
+}

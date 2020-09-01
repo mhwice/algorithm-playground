@@ -1,30 +1,29 @@
 .bar-wrapper {
   width: 100vw;
-  height: 40vh;
+  height: 50%;
   text-align: center;
   position: relative;
   justify-content: center;
-  // background-color: darkslateblue;
 }
 
 .bars {
+  height: calc(90% - 20px);
   position: absolute;
   bottom: 0;
-  margin-left: auto;
-  margin-right: auto;
-  width: 100vw;
-  // background-color: palegreen;
+  display: flex;
+  align-items: flex-end;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 .bar {
   width: 50px;
-  height: 50px;
-  margin: 10px;
+  margin: 0 10px;
   background: #C1C6CC;
   display: inline-block;
-  vertical-align: bottom;
   position: relative;
   border-radius: 10px;
+  vertical-align: bottom;
 }
 
 .bar-text {
@@ -36,20 +35,49 @@
   bottom: 0;
 }
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 100%;
-}
-
-.content {
-  flex-grow: 1;
-  max-height: initial;
-  // background-color: orange;
-}
-
-.footer {
-  position: fixed;
+.sorting-visualizer-wrapper {
+  // display: flex;
+  // flex-direction: column;
+  // height: 100vh;
+  // width: 100%;
+  position: fixed;  
+  top: 0;
+  right: 0;
   bottom: 0;
+  left: 0;
+}
+
+.sorting-visualizer-content {
+  position: fixed;  
+  top: 50px;
+  right: 0;
+  bottom: 95px;
+  left: 0;
+}
+
+@media (max-width: 566px) {
+  .bar {
+    width: 40px;
+  }
+
+  .bar-text {
+    width: 40px;
+  }
+}
+
+@media (max-width: 500px) {
+  .bar {
+    margin: 0 5px;
+  }
+}
+
+@media (max-width: 410px) {
+  .bar {
+    width: 33px;
+    margin: 0 3px;
+  }
+
+  .bar-text {
+    width: 33px;
+  }
 }

@@ -1,21 +1,24 @@
 .selector-box {
-  display: flex;
-  justify-content: start;
-  max-height: 500px;
-  margin: 5px;
+  display: inline-block;
+  vertical-align: middle;
 }
 
-.selectors {
+.selector-text {
+  height: fit-content;
+  margin: 0 10px;
+}
+
+.node-selector-wrapper {
   display: flex;
   justify-content: space-evenly;
 }
 
 .add-edge-button {
-  margin: 0 5px;
+  margin: 5px;
   display: block;
   border-radius: 50px;
   border: 1px solid black;
-  background: snow;
+  background: white;
   padding: 10px 20px;
   outline: none;
 }
@@ -24,7 +27,36 @@
   background-color: lightgray;
 }
 
-.editor-item-container {
-  height: 550px;
+.editor-body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(100% - 86px);
   overflow: auto;
+}
+
+.editor-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 86px;
+  padding: 10px;
+}
+
+.editor-title {
+  margin: 5px 0;
+}
+
+// .editor-item-container {
+//   height: 550px;
+//   overflow: auto;
+//   background-color: slateblue;
+// }
+
+.editor-wrapper {
+  height: 100%;
+  width: 100%;
+  position: relative;
 }

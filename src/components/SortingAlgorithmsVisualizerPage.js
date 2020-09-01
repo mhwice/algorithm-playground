@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import $ from "jquery";
 import mergeSort from "../algorithms/merge-sort";
-import generateArrayWithIndicies from "../utils/generateRandomArrayWithIndicies";
+import generateArrayWithIndicies, {
+	generatePercentageArrayWithIndicies
+} from "../utils/generateRandomArrayWithIndicies";
 import MediaButtons from "./MediaButtons";
 import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
@@ -11,9 +13,10 @@ import SortingEditor from "./SortingEditor";
 
 const INITIAL_HISTORY = [];
 const MIN_BAR_SIZE = 28;
-const MAX_BAR_SIZE = Math.round($(window).height() / 3);
+const MAX_BAR_SIZE = Math.round($(".bars").height());
 const SortingAlgorithmsVisualizerPage = () => {
-	const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
+	const initialBars = () => generatePercentageArrayWithIndicies();
+	// const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
 	const [bars, setBars] = useState(initialBars);
 	const initialAlgorithmProcess = () => mergeSort(bars);
 	const [algorithmProcess] = useState(initialAlgorithmProcess);
@@ -110,12 +113,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 		}
 	};
 
-	// useEffect(() => {
-	// 	if (isEditing) {
-	// 		resetAll();
-	// 	}
-	// }, [isEditing]);
-
 	const editBars = () => {
 		console.log("editBars");
 		setIsEditing((prev) => !prev);
@@ -161,12 +158,12 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	return (
-		<div className="wrapper">
-			<SelectBox className="header" handleClick={handleClick} items={["Merge Sort"]} />
-			<div className="content">
+		<div className="sorting-visualizer-wrapper">
+			<SelectBox handleClick={handleClick} items={["Merge Sort"]} />
+			<div className="sorting-visualizer-content">
 				{isEditing && (
 					<SortingEditor
-						currentBars={bars.map((bar) => bar[0])}
+						currentBars={bars.map((bar) => Math.round(bar[0] * 100))}
 						barInputChanged={barInputChanged}
 						minHeight={MIN_BAR_SIZE}
 						maxHeight={MAX_BAR_SIZE}
@@ -176,8 +173,13 @@ const SortingAlgorithmsVisualizerPage = () => {
 					<div className="bars">
 						{bars.map((bar, barIndex) => {
 							return (
-								<div className="bar" key={barIndex} style={{ height: `${bar[0]}px` }}>
-									<p className="bar-text">{bar[0]}</p>
+								<div
+									className="bar"
+									key={barIndex}
+									style={{ height: `${bar[0] * 100}%` }}
+									// style={{ height: `${(bar[0] - 0.01) * (MAX_BAR_SIZE - MIN_BAR_SIZE) + MIN_BAR_SIZE}px` }}
+								>
+									<p className="bar-text">{Math.round(bar[0] * 100)}</p>
 								</div>
 							);
 						})}
@@ -186,7 +188,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 			</div>
 
 			<MediaButtons
-				className="footer"
 				moveBackward={moveBackward}
 				playPauseToggle={playPauseToggle}
 				moveForward={moveForward}

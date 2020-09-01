@@ -1,5 +1,6 @@
 .table-container {
-  max-height: 70vh;
+  // max-height: 65vh;
+  max-height: 90%;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -9,14 +10,15 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   text-align: center;
+  font-size: 14px;
 }
 table tr th,
 table tr td {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   padding: 5px;
-  min-width: 100px;
-  background: #FFFFFF;
+  max-width: 80px;
+  background: #ffffff;
 }
 table tr th:first-child,
 table tr td:first-child {

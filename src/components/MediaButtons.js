@@ -37,10 +37,6 @@ const MediaButtons = ({
 	</div>
 );
 
-MediaButtons.defaultProps = {
-	addAdditionalButton: false
-};
-
 MediaButtons.propTypes = {
 	moveBackward: PropTypes.func.isRequired,
 	playPauseToggle: PropTypes.func.isRequired,
@@ -49,7 +45,7 @@ MediaButtons.propTypes = {
 	editorToggle: PropTypes.func.isRequired,
 	isPlaying: PropTypes.bool.isRequired,
 	additionalButtonCallback: PropTypes.func.isRequired,
-	addAdditionalButton: PropTypes.bool
+	addAdditionalButton: PropTypes.bool.isRequired
 };
 
 export default MediaButtons;

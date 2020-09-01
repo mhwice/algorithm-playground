@@ -1,8 +1,8 @@
 import $ from "jquery";
 import "jquery-ui";
 
-const HEIGHT = Math.round($(window).height() / 3) + 20;
 const animateBarsUp = (indicies) => {
+	const HEIGHT = Math.round($(".bars").height()) + 20;
 	return new Promise((resolve) => {
 		indicies.forEach((index, i) => {
 			$(".bar")
@@ -33,6 +33,7 @@ const animateBarsUp = (indicies) => {
 };
 
 const animateSingleBarDownWithPromise = (transitionDownAnimations, transitionUpIndicies) => {
+	const HEIGHT = Math.round($(".bars").height()) + 20;
 	return new Promise((resolve) => {
 		if (transitionDownAnimations.length > 0) {
 			const [index, steps] = transitionDownAnimations[0];
