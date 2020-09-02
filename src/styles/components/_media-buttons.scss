@@ -32,9 +32,11 @@
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
 
-.media-button:hover {
-  background: radial-gradient(circle, #0ff 0%, #e0e5ec 60%);
-  animation: colorchange 10s linear infinite;
+@media (hover: hover) {
+  .media-button:hover {
+    background: radial-gradient(circle, #0ff 0%, #e0e5ec 60%);
+    animation: colorchange 10s linear infinite;
+  }
 }
 
 @keyframes colorchange {

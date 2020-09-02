@@ -12,8 +12,6 @@ import SelectBox from "./SelectBox";
 import SortingEditor from "./SortingEditor";
 
 const INITIAL_HISTORY = [];
-const MIN_BAR_SIZE = 28;
-const MAX_BAR_SIZE = Math.round($(".bars").height());
 const SortingAlgorithmsVisualizerPage = () => {
 	const initialBars = () => generatePercentageArrayWithIndicies();
 	// const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
@@ -114,46 +112,65 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	const editBars = () => {
-		console.log("editBars");
 		setIsEditing((prev) => !prev);
 	};
 
-	const containsInvalidCharacters = (str) => !str.match(/^[0-9, ]*$/);
+	// const containsInvalidCharacters = (str) => !str.match(/^[0-9, ]*$/);
 
-	const hasEmptyItems = (str) =>
-		str
-			.split(",")
-			.slice(1, -1)
-			.filter((item) => item.length === 0).length !== 0;
+	// const hasEmptyItems = (str) =>
+	// 	str
+	// 		.split(",")
+	// 		.slice(1, -1)
+	// 		.filter((item) => item.length === 0).length !== 0;
 
-	const containsInvalidNumbers = (str, min, max) =>
-		str.split(",").filter((item) => item < min || item > max).length !== 0;
+	// const containsInvalidNumbers = (str, min, max) =>
+	// 	str.split(",").filter((item) => item < min || item > max).length !== 0;
+
+	const isNotNumber = (str) => !str.match(/^\d+$/);
+
+	const isNotValidNumber = (str) => Number(str) < 1 || Number(str) > 100;
 
 	const getValidString = (str) => {
-		if (containsInvalidCharacters(str)) {
+		// console.log("isNotNumber", isNotNumber(str));
+		if (isNotNumber(str)) {
 			return undefined;
 		}
 
-		if (hasEmptyItems(str)) {
+		// console.log("isNotValidNumber", isNotValidNumber(str));
+		if (isNotValidNumber(str)) {
 			return undefined;
 		}
+		// if (containsInvalidCharacters(str)) {
+		// 	return undefined;
+		// }
 
-		if (containsInvalidNumbers(str, 28, MAX_BAR_SIZE)) {
-			return undefined;
-		}
+		// if (hasEmptyItems(str)) {
+		// 	return undefined;
+		// }
+
+		// if (containsInvalidNumbers(str, 1, 100)) {
+		// 	return undefined;
+		// }
 
 		return str;
 	};
 
-	const formatBars = (input) => {
-		return input.split(",").map((height, index) => [Number(height), index, index]);
-	};
+	const formatNumber = (str) => Number(str) / 100;
+
+	// const formatBars = (input) => {
+	// 	return input.split(",").map((height, index) => [Number(height), index, index]);
+	// };
 
 	const barInputChanged = (e) => {
-		const input = e.target.value;
-		const validString = getValidString(input);
+		const { value } = e.target;
+		const { id } = e.target;
+		const validString = getValidString(value);
 		if (validString) {
-			setBars(formatBars(validString));
+			setBars((prevBars) => {
+				const newBars = [...prevBars];
+				newBars[id] = [formatNumber(validString), newBars[id][1], newBars[id][2]];
+				return newBars;
+			});
 		}
 	};
 
@@ -162,24 +179,21 @@ const SortingAlgorithmsVisualizerPage = () => {
 			<SelectBox handleClick={handleClick} items={["Merge Sort"]} />
 			<div className="sorting-visualizer-content">
 				{isEditing && (
-					<SortingEditor
-						currentBars={bars.map((bar) => Math.round(bar[0] * 100))}
-						barInputChanged={barInputChanged}
-						minHeight={MIN_BAR_SIZE}
-						maxHeight={MAX_BAR_SIZE}
-					/>
+					<SortingEditor currentBars={bars.map((bar) => Math.round(bar[0] * 100))} barInputChanged={barInputChanged} />
 				)}
 				<div className="bar-wrapper">
 					<div className="bars">
 						{bars.map((bar, barIndex) => {
 							return (
-								<div
-									className="bar"
-									key={barIndex}
-									style={{ height: `${bar[0] * 100}%` }}
-									// style={{ height: `${(bar[0] - 0.01) * (MAX_BAR_SIZE - MIN_BAR_SIZE) + MIN_BAR_SIZE}px` }}
-								>
-									<p className="bar-text">{Math.round(bar[0] * 100)}</p>
+								<div className="bar" key={barIndex} style={{ height: `${bar[0] * 100}%` }}>
+									{/* <p className="bar-text">{Math.round(bar[0] * 100)}</p> */}
+									<input
+										id={barIndex}
+										className={isEditing ? "bar-text bar-text-editable" : "bar-text"}
+										type="number"
+										value={Math.round(bar[0] * 100)}
+										onChange={(e) => barInputChanged(e)}
+									/>
 								</div>
 							);
 						})}
@@ -195,6 +209,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 				editorToggle={editBars}
 				isEditing={isEditing}
 				isPlaying={isPlaying}
+				addAdditionalButton={false}
 				additionalButtonCallback={() => {}}
 			/>
 		</div>

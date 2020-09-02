@@ -2,7 +2,7 @@ import $ from "jquery";
 import "jquery-ui";
 
 const animateBarsUp = (indicies) => {
-	const HEIGHT = Math.round($(".bars").height()) + 20;
+	const HEIGHT = Math.round($(".bars").height()) + 10;
 	return new Promise((resolve) => {
 		indicies.forEach((index, i) => {
 			$(".bar")
@@ -33,32 +33,34 @@ const animateBarsUp = (indicies) => {
 };
 
 const animateSingleBarDownWithPromise = (transitionDownAnimations, transitionUpIndicies) => {
-	const HEIGHT = Math.round($(".bars").height()) + 20;
+	const HEIGHT = Math.round($(".bars").height()) + 10;
+	const barItems = $(".bar");
+	const WIDTH =
+		Number(barItems.css("width").slice(0, -2)) + 2 * Number(barItems.css("margin").split(" ")[1].slice(0, -2));
+	console.log("WIDTH", WIDTH);
 	return new Promise((resolve) => {
 		if (transitionDownAnimations.length > 0) {
 			const [index, steps] = transitionDownAnimations[0];
-			$(".bar")
-				.eq(index)
-				.animate(
-					{
-						left: `+=${steps * 70}px`,
-						top: `+=${HEIGHT}px`
-					},
-					{
-						duration: 1000,
-						complete: () => {
-							if (transitionDownAnimations.length > 1) {
-								animateSingleBarDownWithPromise(transitionDownAnimations.slice(1), transitionUpIndicies).then(() => {
-									resolve();
-								});
-							} else {
-								animateBarsUp(transitionUpIndicies).then(() => {
-									resolve();
-								});
-							}
+			barItems.eq(index).animate(
+				{
+					left: `+=${steps * WIDTH}px`,
+					top: `+=${HEIGHT}px`
+				},
+				{
+					duration: 1000,
+					complete: () => {
+						if (transitionDownAnimations.length > 1) {
+							animateSingleBarDownWithPromise(transitionDownAnimations.slice(1), transitionUpIndicies).then(() => {
+								resolve();
+							});
+						} else {
+							animateBarsUp(transitionUpIndicies).then(() => {
+								resolve();
+							});
 						}
 					}
-				);
+				}
+			);
 		}
 	});
 };
@@ -96,26 +98,27 @@ const animateBars = (transitionDownAnimations, transitionUpIndicies, startColorI
 };
 
 const undoAnimations = (animations, barsUsed) => {
+	const barItems = $(".bar");
+	const WIDTH =
+		Number(barItems.css("width").slice(0, -2)) + 2 * Number(barItems.css("margin").split(" ")[1].slice(0, -2));
 	return new Promise((resolve) => {
 		animations.forEach((animation, animationIndex) => {
 			const [barIndex, steps] = animation;
 			const color = barsUsed.includes(barIndex) ? "#61bffc" : "#C1C6CC";
-			$(".bar")
-				.eq(barIndex)
-				.animate(
-					{
-						left: `+=${-1 * steps * 70}px`,
-						backgroundColor: color
-					},
-					{
-						duration: 0,
-						complete: () => {
-							if (animationIndex === animations.length - 1) {
-								resolve();
-							}
+			barItems.eq(barIndex).animate(
+				{
+					left: `+=${-1 * steps * WIDTH}px`,
+					backgroundColor: color
+				},
+				{
+					duration: 0,
+					complete: () => {
+						if (animationIndex === animations.length - 1) {
+							resolve();
 						}
 					}
-				);
+				}
+			);
 		});
 	});
 };

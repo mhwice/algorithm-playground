@@ -5,11 +5,20 @@
   width: 30vw;
 }
 
+.sorting-editor-title {
+  margin-top: 10px;
+}
+
+.sorting-editor-body-text {
+  font-size: 14px;
+}
+
 .bar-input:focus {
   outline: none;
   border: 1px solid red;
 }
 
 .sorting-editor {
+  padding: 10px;
   text-align: center;
 }

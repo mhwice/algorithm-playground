@@ -58,6 +58,8 @@ const GraphVisualizer = () => {
 
 	const [selected, setSelected] = useState("3");
 
+	const [isViewingTable, setIsViewingTable] = useState(false);
+
 	// ================ Steps =============
 
 	// Takes one algorithm step
@@ -149,18 +151,26 @@ const GraphVisualizer = () => {
 
 	// ======================= editor ======================
 
-	useEffect(() => {
-		if (isEditing) {
-			resetAll();
-		}
-	}, [isEditing]);
+	// useEffect(() => {
+	// 	if (isEditing) {
+
+	// 	}
+	// }, [isEditing]);
 
 	// useEffect(() => {
 	// 	console.log("graph", JSON.stringify(graph, null, 2));
 	// }, [graph]);
 
 	const editGraph = () => {
+		resetAll();
 		setIsEditing((prev) => !prev);
+		if (!isViewingTable && $("#graph-window").hasClass("graph-window")) {
+			$("#graph-window").toggleClass("graph-window");
+			$("#table-window").toggleClass("table-window");
+		} else if (!$("#graph-window").hasClass("graph-window")) {
+			$("#graph-window").toggleClass("graph-window");
+			$("#table-window").toggleClass("table-window");
+		}
 	};
 
 	// need to prevent the deletion of the start and end nodes!
@@ -374,9 +384,11 @@ const GraphVisualizer = () => {
 				isPlaying={isPlaying}
 				addAdditionalButton
 				additionalButtonCallback={() => {
+					setIsViewingTable((prev) => !prev);
 					$("#graph-window").toggleClass("graph-window");
 					$("#table-window").toggleClass("table-window");
 				}}
+				isViewingTable={isViewingTable}
 			/>
 		</div>
 	);

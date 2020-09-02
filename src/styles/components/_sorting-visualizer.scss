@@ -7,7 +7,7 @@
 }
 
 .bars {
-  height: calc(90% - 20px);
+  height: calc(95% - 10px);
   position: absolute;
   bottom: 0;
   display: flex;
@@ -30,9 +30,32 @@
   position: absolute;
   left: 0; 
   right: 0; 
-  margin: 5px auto;
+  margin: 10px auto;
   width: 50px;
   bottom: 0;
+  border: none;
+  outline: none;
+  text-align: center;
+  background: none;
+  color: darken($color: #C1C6CC, $amount: 30);
+  pointer-events: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.bar-text-editable {
+  color: red;//darken($color: #C1C6CC, $amount: 100);
+  pointer-events: visible;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid red;
 }
 
 .sorting-visualizer-wrapper {

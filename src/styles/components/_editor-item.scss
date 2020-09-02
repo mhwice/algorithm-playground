@@ -11,7 +11,7 @@
   padding: 5px;
   border: 1px solid black;
   border-radius: 10px;
-  width: 60px;
+  width: 50px;
 }
 
 .editor-item-input:focus {
@@ -29,13 +29,18 @@
   outline: none;
 }
 
-.remove-button:hover {
-  background-color: lightgray;
+@media (hover: hover) {
+  .remove-button:hover {
+    background-color: lightgray;
+  }
 }
 
 .tag-text {
   align-items: center;
-  margin: 10px;
+  vertical-align: middle;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 @media (max-width: 500px) {

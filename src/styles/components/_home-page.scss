@@ -29,9 +29,10 @@
   border-radius: 10px;
 }
 
-.link:hover {
-  color: #D596FF;
-  // background-color: #C1C6CC;
+@media (hover: hover) {
+  .link:hover {
+    color: #D596FF;
+  }
 }
 
 .navigation-container {

@@ -1,5 +1,4 @@
 .table-container {
-  // max-height: 65vh;
   max-height: 90%;
   overflow-y: auto;
   overflow-x: hidden;
@@ -10,14 +9,14 @@ table {
   border-collapse: separate;
   border-spacing: 0;
   text-align: center;
-  font-size: 14px;
+  font-size: 13px;
 }
 table tr th,
 table tr td {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
   padding: 5px;
-  max-width: 80px;
+  max-width: 70px;
   background: #ffffff;
 }
 table tr th:first-child,
@@ -27,7 +26,7 @@ table tr td:first-child {
 table tr th {
   background: #FFFFFF;
   border-top: 1px solid black;
-  padding: 10px;
+  padding: 6px;
 }
 
 /* top-left border-radius */
