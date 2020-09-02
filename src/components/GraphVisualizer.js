@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import $ from "jquery";
 import AlgorithmManager from "../algorithms/AlgorithmManager";
 import Graph from "./Graph";
@@ -22,14 +22,16 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../settings/graph-algorithm-settings";
 
-const ROWS = 7;
-const COLUMNS = 7;
+const ROWS = 5;
+const COLUMNS = 5;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
 const GraphVisualizer = () => {
 	let { IS_WEIGHTED, IS_DIRECTED, ALGORITHM, headings, titles, INITIAL_HISTORY } = getSettings("2");
+
+	const [isWeighted, setIsWeighted] = useState(IS_WEIGHTED);
 
 	// Graph model
 	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ROWS, COLUMNS);
@@ -56,7 +58,7 @@ const GraphVisualizer = () => {
 	// History
 	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
 
-	const [selected, setSelected] = useState("3");
+	const [selected, setSelected] = useState("2");
 
 	const [isViewingTable, setIsViewingTable] = useState(false);
 
@@ -331,7 +333,12 @@ const GraphVisualizer = () => {
 		if (selected !== value) {
 			setSelected(value);
 			const settings = getSettings(value);
+
+			// ! For some reason, DFS is not getting set properly here...
+			// console.log(settings);
+
 			IS_WEIGHTED = settings.IS_WEIGHTED;
+			setIsWeighted(IS_WEIGHTED);
 			IS_DIRECTED = settings.IS_DIRECTED;
 			ALGORITHM = settings.ALGORITHM;
 			headings = settings.headings;
@@ -350,7 +357,7 @@ const GraphVisualizer = () => {
 			<div className="content">
 				<div className="window-container">
 					<div id="table-window" className="window table-window">
-						{isEditing ? ( // isEditing
+						{isEditing ? (
 							<Editor
 								list={graphToEdgeList(graph)}
 								addEdge={addEdgeCallback}
@@ -358,7 +365,7 @@ const GraphVisualizer = () => {
 								updateEdge={updateEdgeCallback}
 								updateStartNode={updateStartNode}
 								updateEndNode={updateEndNode}
-								isWeighted={IS_WEIGHTED}
+								isWeighted={isWeighted}
 							/>
 						) : (
 							<>

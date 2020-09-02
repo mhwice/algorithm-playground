@@ -24,45 +24,14 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			console.log("no problem");
 		}
 
-		// const sizeChanged = () => {
-		// 	try {
-		// 		console.log("sizeChanged");
-		// 		setTimeout(() => {
-		// 			cyRef.fit([], 30);
-		// 			cyRef.center();
-		// 			cyRef.resize();
-		// 		}, 500);
-		// 	} catch (err) {
-		// 		console.log("no problem");
-		// 	}
-		// };
-
-		// console.log("add observer");
-		// const graphWindow = document.querySelector("#graph-window");
-		// const graphWindowResizeObserver = new ResizeObserver(sizeChanged);
-		// graphWindowResizeObserver.observe(graphWindow);
-
-		// const centerGraph = () => {
-		// 	try {
-		// 		cyRef.fit([], 30);
-		// 		cyRef.resize();
-		// 	} catch (err) {
-		// 		console.log("no problem");
-		// 	}
-		// };
-		// window.addEventListener("resize", centerGraph);
-
 		try {
 			cyRef.reset();
-			const newLayout = cyRef.layout({ name: "cola", padding: 20 });
+			const newLayout = cyRef.layout({ name: "cola", padding: 20, animate: true, maxSimulationTime: 10000 });
 			newLayout.run();
 		} catch (err) {
 			console.log("no problem");
 		}
 		return () => {
-			// console.log("remove observer");
-			// window.removeEventListener("resize", centerGraph);
-			// graphWindowResizeObserver.unobserve(graphWindow);
 			try {
 				cyRef.removeListener("resize", sizeChanged);
 			} catch (err) {
@@ -150,7 +119,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			}
 		},
 		{
-			selector: "edge[weight]",
+			selector: "edge[?weight]",
 			style: {
 				label: "data(weight)"
 			}

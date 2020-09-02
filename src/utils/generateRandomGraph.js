@@ -76,6 +76,7 @@ const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {
 								id: `${nodeId}-${neighborId}`,
 								source: nodeId,
 								target: neighborId,
+								weight: undefined,
 								isDirected
 							}
 						};

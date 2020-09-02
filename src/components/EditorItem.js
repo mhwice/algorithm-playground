@@ -20,7 +20,6 @@ const EditorItem = ({ fromNode, toNode, weight, removeEdge, updateEdge, id, isWe
 				value={toNode}
 				required
 			/>
-
 			{isWeighted && (
 				<>
 					<span className="tag-text">Weight:</span>
