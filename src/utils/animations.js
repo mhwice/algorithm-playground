@@ -2,14 +2,13 @@ import $ from "jquery";
 import "jquery-ui";
 
 const animateBarsUp = (indicies) => {
-	const HEIGHT = Math.round($(".bars").height()) + 10;
 	return new Promise((resolve) => {
 		indicies.forEach((index, i) => {
 			$(".bar")
 				.eq(index)
 				.animate(
 					{
-						top: `-=${HEIGHT}px`
+						top: "0%"
 					},
 					{
 						duration: 1000
@@ -33,18 +32,17 @@ const animateBarsUp = (indicies) => {
 };
 
 const animateSingleBarDownWithPromise = (transitionDownAnimations, transitionUpIndicies) => {
-	const HEIGHT = Math.round($(".bars").height()) + 10;
 	const barItems = $(".bar");
 	const WIDTH =
 		Number(barItems.css("width").slice(0, -2)) + 2 * Number(barItems.css("margin").split(" ")[1].slice(0, -2));
-	console.log("WIDTH", WIDTH);
+	const containerWidth = Number($(".bars").css("width").slice(0, -2));
 	return new Promise((resolve) => {
 		if (transitionDownAnimations.length > 0) {
 			const [index, steps] = transitionDownAnimations[0];
 			barItems.eq(index).animate(
 				{
-					left: `+=${steps * WIDTH}px`,
-					top: `+=${HEIGHT}px`
+					left: `+=${((steps * WIDTH) / containerWidth) * 100}%`,
+					top: "105%"
 				},
 				{
 					duration: 1000,

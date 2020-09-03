@@ -90,17 +90,28 @@ input[type=number] {
 
 @media (max-width: 500px) {
   .bar {
-    margin: 0 5px;
+    margin: 0 8px;
   }
 }
 
-@media (max-width: 410px) {
+@media (max-width: 440px) {
   .bar {
     width: 33px;
-    margin: 0 3px;
+    margin: 0 4px;
   }
 
   .bar-text {
     width: 33px;
+  }
+}
+
+@media (max-width: 330px) {
+  .bar {
+    width: 30px;
+    margin: 0 4px;
+  }
+
+  .bar-text {
+    width: 30px;
   }
 }

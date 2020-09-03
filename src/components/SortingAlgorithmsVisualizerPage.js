@@ -17,7 +17,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 	// const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
 	const [bars, setBars] = useState(initialBars);
 	const initialAlgorithmProcess = () => mergeSort(bars);
-	const [algorithmProcess] = useState(initialAlgorithmProcess);
+	const [algorithmProcess, setAlgorithmProcess] = useState(initialAlgorithmProcess);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
@@ -32,7 +32,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 			const { value: animations } = result;
 			const indicies = animations.map((animation) => animation[0]);
 			setHistory([animations, indicies, [...indicies]]);
-			setIsAnimating(true);
 			animateBars(animations, indicies, [...indicies]).then(() => {
 				setIsAnimating(false);
 			});
@@ -43,7 +42,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	const redoStep = () => {
-		setIsAnimating(true);
 		animateBars(...history.future[0]).then(() => {
 			setIsAnimating(false);
 		});
@@ -62,7 +60,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 					}
 				});
 			});
-			setIsAnimating(true);
 			undoAnimations(history.present[0], barsUsed).then(() => {
 				setIsAnimating(false);
 			});
@@ -71,12 +68,16 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	const resetAll = () => {
-		clearAnimations();
-		resetHistory(INITIAL_HISTORY);
+		if (!isAnimating) {
+			setAlgorithmProcess(initialAlgorithmProcess);
+			clearAnimations();
+			resetHistory(INITIAL_HISTORY);
+		}
 	};
 
 	const moveBackward = () => {
 		if (!isAnimating) {
+			setIsAnimating(true);
 			undoStep();
 		}
 	};
@@ -84,6 +85,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 	// Moves forward one step
 	const moveForward = () => {
 		if (!isAnimating) {
+			setIsAnimating(true);
 			if (canRedoHistory) {
 				redoStep();
 			} else {
@@ -98,10 +100,10 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	useInterval(() => {
-		if (isPlaying && !isAnimating) {
+		if (isPlaying) {
 			moveForward();
 		}
-	}, 500);
+	}, 0);
 
 	const handleClick = (radio) => {
 		const { value } = radio.target;
@@ -112,7 +114,10 @@ const SortingAlgorithmsVisualizerPage = () => {
 	};
 
 	const editBars = () => {
-		setIsEditing((prev) => !prev);
+		if (!isAnimating) {
+			resetAll();
+			setIsEditing((prev) => !prev);
+		}
 	};
 
 	// const containsInvalidCharacters = (str) => !str.match(/^[0-9, ]*$/);
@@ -211,6 +216,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 				isPlaying={isPlaying}
 				addAdditionalButton={false}
 				additionalButtonCallback={() => {}}
+				isViewingTable={false}
 			/>
 		</div>
 	);
