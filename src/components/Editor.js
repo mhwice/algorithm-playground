@@ -14,7 +14,7 @@ const Editor = ({ list, addEdge, removeEdge, updateEdge, updateStartNode, update
 						<NodeSelector
 							onSelect={updateStartNode}
 							initialValue={list.nodes.filter((node) => node.isStart)[0].originalIndex}
-							nodes={list.nodes}
+							nodes={list.nodes.filter((node) => !node.isEnd)}
 						/>
 					</div>
 					<div className="selector-box">
@@ -22,7 +22,7 @@ const Editor = ({ list, addEdge, removeEdge, updateEdge, updateStartNode, update
 						<NodeSelector
 							onSelect={updateEndNode}
 							initialValue={list.nodes.filter((node) => node.isEnd)[0].originalIndex}
-							nodes={list.nodes}
+							nodes={list.nodes.filter((node) => !node.isStart)}
 						/>
 					</div>
 				</div>

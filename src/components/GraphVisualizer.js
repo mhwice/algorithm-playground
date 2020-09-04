@@ -22,6 +22,13 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../settings/graph-algorithm-settings";
 
+/*
+
+	! Problems moving from Dijkstra to DFS
+	1) 
+
+*/
+
 const ROWS = 5;
 const COLUMNS = 5;
 
@@ -334,18 +341,23 @@ const GraphVisualizer = () => {
 			setSelected(value);
 			const settings = getSettings(value);
 
-			// ! For some reason, DFS is not getting set properly here...
-			// console.log(settings);
-
 			IS_WEIGHTED = settings.IS_WEIGHTED;
-			setIsWeighted(IS_WEIGHTED);
 			IS_DIRECTED = settings.IS_DIRECTED;
 			ALGORITHM = settings.ALGORITHM;
 			headings = settings.headings;
 			titles = settings.titles;
 			INITIAL_HISTORY = settings.INITIAL_HISTORY;
-			resetAll();
-			setGraph(initialGraph);
+
+			setIsWeighted(IS_WEIGHTED);
+			setStartNode(INITIAL_START_NODE);
+			setEndNode(INITIAL_END_NODE);
+			setIsPlaying(false);
+			setVisitedNodes(history.present[0]);
+			setPath({ path: [], drawPath: false });
+			resetHistory(INITIAL_HISTORY);
+			const newGraph = initialGraph();
+			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, INITIAL_START_NODE, INITIAL_END_NODE));
+			setGraph(newGraph);
 		}
 	};
 
