@@ -1,22 +1,28 @@
 import React, { useState } from "react";
-import $ from "jquery";
-import mergeSort from "../algorithms/merge-sort";
-import generateArrayWithIndicies, {
-	generatePercentageArrayWithIndicies
-} from "../utils/generateRandomArrayWithIndicies";
+import { generatePercentageArrayWithIndicies } from "../utils/generateRandomArrayWithIndicies";
 import MediaButtons from "./MediaButtons";
 import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
-import animateBars, { undoAnimations, clearAnimations } from "../utils/animations";
 import SelectBox from "./SelectBox";
 import SortingEditor from "./SortingEditor";
+import SortingAlgorithmManager from "../algorithms/SortingAlgorithmManager";
+
+const getSettings = (val) => {
+	switch (val) {
+		case "1":
+			return "merge-sort";
+		case "2":
+			return "insertion-sort";
+		default:
+	}
+};
 
 const INITIAL_HISTORY = [];
 const SortingAlgorithmsVisualizerPage = () => {
+	const [selected, setSelected] = useState("2");
 	const initialBars = () => generatePercentageArrayWithIndicies();
-	// const initialBars = () => generateArrayWithIndicies(MAX_BAR_SIZE);
 	const [bars, setBars] = useState(initialBars);
-	const initialAlgorithmProcess = () => mergeSort(bars);
+	const initialAlgorithmProcess = () => new SortingAlgorithmManager(getSettings(selected), bars);
 	const [algorithmProcess, setAlgorithmProcess] = useState(initialAlgorithmProcess);
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isAnimating, setIsAnimating] = useState(false);
@@ -24,25 +30,23 @@ const SortingAlgorithmsVisualizerPage = () => {
 	const [history, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }] = useHistory([
 		INITIAL_HISTORY
 	]);
-	const [selected, setSelected] = useState("3");
 
 	const takeStep = () => {
 		const result = algorithmProcess.next();
 		if (!result.done) {
-			const { value: animations } = result;
-			const indicies = animations.map((animation) => animation[0]);
-			setHistory([animations, indicies, [...indicies]]);
-			animateBars(animations, indicies, [...indicies]).then(() => {
+			const { animations } = result;
+			setHistory(animations);
+			algorithmProcess.doAnimation(animations).then(() => {
 				setIsAnimating(false);
 			});
 		} else {
 			setIsPlaying(false);
-			console.log(`Final Result: ${result.value}`);
+			setIsAnimating(false);
 		}
 	};
 
 	const redoStep = () => {
-		animateBars(...history.future[0]).then(() => {
+		algorithmProcess.doAnimation(history.future[0]).then(() => {
 			setIsAnimating(false);
 		});
 		redoHistory();
@@ -50,17 +54,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	const undoStep = () => {
 		if (canUndoHistory) {
-			const barsUsed = [];
-			history.past.forEach((past) => {
-				const pastAnimations = past[0];
-				pastAnimations.forEach((animation) => {
-					const barId = animation[0];
-					if (!barsUsed.includes(barId)) {
-						barsUsed.push(barId);
-					}
-				});
-			});
-			undoAnimations(history.present[0], barsUsed).then(() => {
+			algorithmProcess.undoAnimation(history).then(() => {
 				setIsAnimating(false);
 			});
 		}
@@ -69,8 +63,8 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	const resetAll = () => {
 		if (!isAnimating) {
+			algorithmProcess.clear();
 			setAlgorithmProcess(initialAlgorithmProcess);
-			clearAnimations();
 			resetHistory(INITIAL_HISTORY);
 		}
 	};
@@ -84,6 +78,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	// Moves forward one step
 	const moveForward = () => {
+		// takeTempStep();
 		if (!isAnimating) {
 			setIsAnimating(true);
 			if (canRedoHistory) {
@@ -107,9 +102,11 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	const handleClick = (radio) => {
 		const { value } = radio.target;
-		if (value === selected) {
+		if (value !== selected) {
 			setSelected(value);
-			resetAll();
+			setAlgorithmProcess(new SortingAlgorithmManager(getSettings(value), bars));
+			algorithmProcess.clear();
+			resetHistory(INITIAL_HISTORY);
 		}
 	};
 
@@ -120,51 +117,23 @@ const SortingAlgorithmsVisualizerPage = () => {
 		}
 	};
 
-	// const containsInvalidCharacters = (str) => !str.match(/^[0-9, ]*$/);
-
-	// const hasEmptyItems = (str) =>
-	// 	str
-	// 		.split(",")
-	// 		.slice(1, -1)
-	// 		.filter((item) => item.length === 0).length !== 0;
-
-	// const containsInvalidNumbers = (str, min, max) =>
-	// 	str.split(",").filter((item) => item < min || item > max).length !== 0;
-
 	const isNotNumber = (str) => !str.match(/^\d+$/);
 
 	const isNotValidNumber = (str) => Number(str) < 1 || Number(str) > 100;
 
 	const getValidString = (str) => {
-		// console.log("isNotNumber", isNotNumber(str));
 		if (isNotNumber(str)) {
 			return undefined;
 		}
 
-		// console.log("isNotValidNumber", isNotValidNumber(str));
 		if (isNotValidNumber(str)) {
 			return undefined;
 		}
-		// if (containsInvalidCharacters(str)) {
-		// 	return undefined;
-		// }
-
-		// if (hasEmptyItems(str)) {
-		// 	return undefined;
-		// }
-
-		// if (containsInvalidNumbers(str, 1, 100)) {
-		// 	return undefined;
-		// }
 
 		return str;
 	};
 
 	const formatNumber = (str) => Number(str) / 100;
-
-	// const formatBars = (input) => {
-	// 	return input.split(",").map((height, index) => [Number(height), index, index]);
-	// };
 
 	const barInputChanged = (e) => {
 		const { value } = e.target;
@@ -181,7 +150,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	return (
 		<div className="sorting-visualizer-wrapper">
-			<SelectBox handleClick={handleClick} items={["Merge Sort"]} />
+			<SelectBox handleClick={handleClick} items={["Merge Sort", "Insertion Sort"]} />
 			<div className="sorting-visualizer-content">
 				{isEditing && (
 					<SortingEditor currentBars={bars.map((bar) => Math.round(bar[0] * 100))} barInputChanged={barInputChanged} />
@@ -191,7 +160,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 						{bars.map((bar, barIndex) => {
 							return (
 								<div className="bar" key={barIndex} style={{ height: `${bar[0] * 100}%` }}>
-									{/* <p className="bar-text">{Math.round(bar[0] * 100)}</p> */}
 									<input
 										id={barIndex}
 										className={isEditing ? "bar-text bar-text-editable" : "bar-text"}

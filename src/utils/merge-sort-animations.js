@@ -87,7 +87,8 @@ const animateBarsStartColor = (transitionDownAnimations, transitionUpIndicies, s
 	});
 };
 
-const animateBars = (transitionDownAnimations, transitionUpIndicies, startColorIndicies) => {
+const animateBars = (animationData) => {
+	const [transitionDownAnimations, transitionUpIndicies, startColorIndicies] = animationData;
 	return new Promise((resolve) => {
 		animateBarsStartColor(transitionDownAnimations, transitionUpIndicies, startColorIndicies).then(() => {
 			resolve();
@@ -95,7 +96,8 @@ const animateBars = (transitionDownAnimations, transitionUpIndicies, startColorI
 	});
 };
 
-const undoAnimations = (animations, barsUsed) => {
+const undoAnimations = (animationData) => {
+	const [animations, barsUsed] = animationData;
 	const barItems = $(".bar");
 	const WIDTH =
 		Number(barItems.css("width").slice(0, -2)) + 2 * Number(barItems.css("margin").split(" ")[1].slice(0, -2));

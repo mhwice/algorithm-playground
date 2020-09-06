@@ -13,6 +13,12 @@ const generatePercentageArrayWithIndicies = () => {
 	for (let i = 0; i < 8; i += 1) {
 		randomArray.push([getRandomNumber(1, 100) / 100, i, i]);
 	}
+	// return [
+	// 	[0.7, 0, 0],
+	// 	[0.5, 1, 1],
+	// 	[0.8, 2, 2],
+	// 	[0.4, 3, 3]
+	// ];
 	return randomArray;
 };
 

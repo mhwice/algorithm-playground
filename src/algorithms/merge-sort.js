@@ -3,16 +3,12 @@ function* merge(leftArray, rightArray) {
 	const animations = [];
 
 	const startIndex = leftArray[0][2] < rightArray[0][2] ? leftArray[0][2] : rightArray[0][2];
-	// console.log(" ");
 	while (leftArray.length > 0 && rightArray.length > 0) {
-		// console.log("leftArray", JSON.stringify(leftArray));
-		// console.log("rightArray", JSON.stringify(rightArray));
 		if (leftArray[0][0] < rightArray[0][0]) {
 			const val = leftArray.shift();
 			const barId = val[1];
 			const positionToInsertAt = startIndex + newArray.length;
 			const numSpaces = positionToInsertAt - val[2];
-			// console.log(`Moving ${val[0]} (${startIndex} + ${newArray.length} - ${val[2]}) = ${numSpaces} spaces`);
 			val[2] += numSpaces;
 			animations.push([barId, numSpaces]);
 			newArray.push(val);
@@ -21,20 +17,16 @@ function* merge(leftArray, rightArray) {
 			const barId = val[1];
 			const positionToInsertAt = startIndex + newArray.length;
 			const numSpaces = positionToInsertAt - val[2];
-			// console.log(`Moving ${val[0]} (${startIndex} + ${newArray.length} - ${val[2]}) = ${numSpaces} spaces`);
 			val[2] += numSpaces;
 			animations.push([barId, numSpaces]);
 			newArray.push(val);
 		}
 	}
 
-	// console.log("---");
-
 	let added = 0;
 	if (leftArray.length === 0) {
 		rightArray.forEach((item) => {
 			const numSpaces = startIndex + newArray.length + added - item[2];
-			// console.log(`Moving (${item[0]} ${startIndex} + ${newArray.length} - ${item[2]}) = ${numSpaces} spaces`);
 			item[2] += numSpaces;
 			animations.push([item[1], numSpaces]);
 			added += 1;
@@ -42,7 +34,6 @@ function* merge(leftArray, rightArray) {
 	} else {
 		leftArray.forEach((item) => {
 			const numSpaces = startIndex + newArray.length + added - item[2];
-			// console.log(`Moving (${item[0]} ${startIndex} + ${newArray.length} - ${item[2]}) = ${numSpaces} spaces`);
 			item[2] += numSpaces;
 			animations.push([item[1], numSpaces]);
 			added += 1;
