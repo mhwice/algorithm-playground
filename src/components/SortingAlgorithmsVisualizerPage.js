@@ -13,13 +13,15 @@ const getSettings = (val) => {
 			return "merge-sort";
 		case "2":
 			return "insertion-sort";
+		case "3":
+			return "quick-sort";
 		default:
 	}
 };
 
 const INITIAL_HISTORY = [];
 const SortingAlgorithmsVisualizerPage = () => {
-	const [selected, setSelected] = useState("2");
+	const [selected, setSelected] = useState("3");
 	const initialBars = () => generatePercentageArrayWithIndicies();
 	const [bars, setBars] = useState(initialBars);
 	const initialAlgorithmProcess = () => new SortingAlgorithmManager(getSettings(selected), bars);
@@ -78,7 +80,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	// Moves forward one step
 	const moveForward = () => {
-		// takeTempStep();
 		if (!isAnimating) {
 			setIsAnimating(true);
 			if (canRedoHistory) {
@@ -150,7 +151,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	return (
 		<div className="sorting-visualizer-wrapper">
-			<SelectBox handleClick={handleClick} items={["Merge Sort", "Insertion Sort"]} />
+			<SelectBox handleClick={handleClick} items={["Merge Sort", "Insertion Sort", "Quick Sort"]} />
 			<div className="sorting-visualizer-content">
 				{isEditing && (
 					<SortingEditor currentBars={bars.map((bar) => Math.round(bar[0] * 100))} barInputChanged={barInputChanged} />

@@ -2,6 +2,8 @@ import mergeSort from "./merge-sort";
 import { insertionSortProcess } from "./insertion-sort";
 import animateBars, { undoAnimations, clearAnimations } from "../utils/merge-sort-animations";
 import doInsertionSortAnimation, { undoInsertionSortAnimations } from "../utils/insertion-sort-animations";
+import quicksortProcess from "./quicksort";
+import doQuickSortAnimation, { undoQuickSortAnimations } from "../utils/quicksort-animations";
 
 class SortingAlgorithmManager {
 	constructor(algorithm, array) {
@@ -14,6 +16,11 @@ class SortingAlgorithmManager {
 			case "insertion-sort": {
 				this.algorithm = "insertion-sort";
 				this.process = insertionSortProcess(array);
+				break;
+			}
+			case "quick-sort": {
+				this.algorithm = "quick-sort";
+				this.process = quicksortProcess(array);
 				break;
 			}
 			default:
@@ -40,6 +47,13 @@ class SortingAlgorithmManager {
 			return { done: true };
 		}
 
+		if (this.algorithm === "quick-sort") {
+			if (!iterable.done) {
+				return { done: false, animations: iterable.value };
+			}
+			return { done: true };
+		}
+
 		return "algorithm not found";
 	}
 
@@ -50,6 +64,9 @@ class SortingAlgorithmManager {
 			}
 			case "insertion-sort": {
 				return doInsertionSortAnimation(animation);
+			}
+			case "quick-sort": {
+				return doQuickSortAnimation(animation);
 			}
 			default:
 		}
@@ -72,6 +89,9 @@ class SortingAlgorithmManager {
 			}
 			case "insertion-sort": {
 				return undoInsertionSortAnimations(history.present);
+			}
+			case "quick-sort": {
+				return undoQuickSortAnimations(history.present);
 			}
 			default:
 		}
