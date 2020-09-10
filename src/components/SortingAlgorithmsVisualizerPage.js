@@ -15,13 +15,15 @@ const getSettings = (val) => {
 			return "insertion-sort";
 		case "3":
 			return "quick-sort";
+		case "4":
+			return "bubble-sort";
 		default:
 	}
 };
 
 const INITIAL_HISTORY = [];
 const SortingAlgorithmsVisualizerPage = () => {
-	const [selected, setSelected] = useState("3");
+	const [selected, setSelected] = useState("4");
 	const initialBars = () => generatePercentageArrayWithIndicies();
 	const [bars, setBars] = useState(initialBars);
 	const initialAlgorithmProcess = () => new SortingAlgorithmManager(getSettings(selected), bars);
@@ -32,6 +34,18 @@ const SortingAlgorithmsVisualizerPage = () => {
 	const [history, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }] = useHistory([
 		INITIAL_HISTORY
 	]);
+
+	// const dummyStep = () => {
+	// 	const result = algorithmProcess.next();
+	// 	console.log("result", JSON.stringify(result, null, 2));
+	// 	if (!result.done) {
+	// 		const { animations } = result;
+	// 		setHistory(animations);
+	// 		algorithmProcess.doAnimation(animations).then(() => {
+	// 			setIsAnimating(false);
+	// 		});
+	// 	}
+	// };
 
 	const takeStep = () => {
 		const result = algorithmProcess.next();
@@ -151,7 +165,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	return (
 		<div className="sorting-visualizer-wrapper">
-			<SelectBox handleClick={handleClick} items={["Merge Sort", "Insertion Sort", "Quick Sort"]} />
+			<SelectBox handleClick={handleClick} items={["Merge Sort", "Insertion Sort", "Quick Sort", "Bubble Sort"]} />
 			<div className="sorting-visualizer-content">
 				{isEditing && (
 					<SortingEditor currentBars={bars.map((bar) => Math.round(bar[0] * 100))} barInputChanged={barInputChanged} />

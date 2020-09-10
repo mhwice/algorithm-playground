@@ -4,6 +4,8 @@ import animateBars, { undoAnimations, clearAnimations } from "../utils/merge-sor
 import doInsertionSortAnimation, { undoInsertionSortAnimations } from "../utils/insertion-sort-animations";
 import quicksortProcess from "./quicksort";
 import doQuickSortAnimation, { undoQuickSortAnimations } from "../utils/quicksort-animations";
+import bubbleSortProcess from "./bubble-sort";
+import doBubbleSortAnimation, { undoBubbleSortAnimations } from "../utils/bubble-sort-animations";
 
 class SortingAlgorithmManager {
 	constructor(algorithm, array) {
@@ -21,6 +23,11 @@ class SortingAlgorithmManager {
 			case "quick-sort": {
 				this.algorithm = "quick-sort";
 				this.process = quicksortProcess(array);
+				break;
+			}
+			case "bubble-sort": {
+				this.algorithm = "bubble-sort";
+				this.process = bubbleSortProcess(array);
 				break;
 			}
 			default:
@@ -54,6 +61,13 @@ class SortingAlgorithmManager {
 			return { done: true };
 		}
 
+		if (this.algorithm === "bubble-sort") {
+			if (!iterable.done) {
+				return { done: false, animations: iterable.value };
+			}
+			return { done: true };
+		}
+
 		return "algorithm not found";
 	}
 
@@ -67,6 +81,9 @@ class SortingAlgorithmManager {
 			}
 			case "quick-sort": {
 				return doQuickSortAnimation(animation);
+			}
+			case "bubble-sort": {
+				return doBubbleSortAnimation(animation);
 			}
 			default:
 		}
@@ -92,6 +109,42 @@ class SortingAlgorithmManager {
 			}
 			case "quick-sort": {
 				return undoQuickSortAnimations(history.present);
+			}
+			case "bubble-sort": {
+				const newAnimations = {};
+				history.present.forEach((animation) => {
+					const [bar1, bar2, shouldSwap] = animation;
+					if (shouldSwap) {
+						if (Object.prototype.hasOwnProperty.call(newAnimations, bar1)) {
+							newAnimations[bar1] += 1;
+						} else {
+							newAnimations[bar1] = 1;
+						}
+						if (Object.prototype.hasOwnProperty.call(newAnimations, bar2)) {
+							newAnimations[bar2] -= 1;
+						} else {
+							newAnimations[bar2] = -1;
+						}
+					}
+				});
+
+				const coloredItems = [];
+				if (history.present.length === 0) {
+					return undoBubbleSortAnimations([], coloredItems);
+				}
+
+				const lastAnimation = history.present[history.present.length - 1];
+				const [bar1, bar2, shouldSwap] = lastAnimation;
+				const coloredBar = shouldSwap ? bar1 : bar2;
+				coloredItems.push(coloredBar);
+				if (history.present.length === 1) {
+					coloredItems.push(!shouldSwap ? bar1 : bar2);
+				}
+
+				return undoBubbleSortAnimations(
+					Object.keys(newAnimations).map((key) => [key, newAnimations[key]]),
+					coloredItems
+				);
 			}
 			default:
 		}
