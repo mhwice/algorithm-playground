@@ -5,9 +5,6 @@ const HomePage = () => {
 	return (
 		<div className="bg">
 			<div className="navigation-container">
-				<Link className="link" to="/data-structures">
-					Data Structures
-				</Link>
 				<Link className="link" to="/graph-algorithms">
 					Graph Algorithms
 				</Link>

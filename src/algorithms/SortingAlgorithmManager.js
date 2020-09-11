@@ -6,6 +6,8 @@ import quicksortProcess from "./quicksort";
 import doQuickSortAnimation, { undoQuickSortAnimations } from "../utils/quicksort-animations";
 import bubbleSortProcess from "./bubble-sort";
 import doBubbleSortAnimation, { undoBubbleSortAnimations } from "../utils/bubble-sort-animations";
+import selectionSortProcess from "./selection-sort";
+import doSelectionSortAnimation, { undoSelectionSortAnimations } from "../utils/selection-sort-animations";
 
 class SortingAlgorithmManager {
 	constructor(algorithm, array) {
@@ -28,6 +30,11 @@ class SortingAlgorithmManager {
 			case "bubble-sort": {
 				this.algorithm = "bubble-sort";
 				this.process = bubbleSortProcess(array);
+				break;
+			}
+			case "selection-sort": {
+				this.algorithm = "selection-sort";
+				this.process = selectionSortProcess(array);
 				break;
 			}
 			default:
@@ -68,6 +75,13 @@ class SortingAlgorithmManager {
 			return { done: true };
 		}
 
+		if (this.algorithm === "selection-sort") {
+			if (!iterable.done) {
+				return { done: false, animations: iterable.value };
+			}
+			return { done: true };
+		}
+
 		return "algorithm not found";
 	}
 
@@ -84,6 +98,9 @@ class SortingAlgorithmManager {
 			}
 			case "bubble-sort": {
 				return doBubbleSortAnimation(animation);
+			}
+			case "selection-sort": {
+				return doSelectionSortAnimation(animation);
 			}
 			default:
 		}
@@ -145,6 +162,9 @@ class SortingAlgorithmManager {
 					Object.keys(newAnimations).map((key) => [key, newAnimations[key]]),
 					coloredItems
 				);
+			}
+			case "selection-sort": {
+				return undoSelectionSortAnimations(history.present);
 			}
 			default:
 		}
