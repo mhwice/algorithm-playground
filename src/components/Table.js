@@ -6,11 +6,11 @@ const Table = ({ title, headings, data }) => {
 		<div className="table-container">
 			<table>
 				<thead>
-					{/* <tr>
-					<th className="table-title" colSpan={headings.length}>
-						{title}
-					</th>
-				</tr> */}
+					<tr>
+						<th id="table-title" colSpan={headings.length}>
+							{title}
+						</th>
+					</tr>
 					<tr>
 						{headings.map((heading, headingIndex) => (
 							<th key={headingIndex}>{heading}</th>

@@ -22,13 +22,6 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../settings/graph-algorithm-settings";
 
-/*
-
-	! Problems moving from Dijkstra to DFS
-	1) 
-
-*/
-
 const ROWS = 5;
 const COLUMNS = 5;
 
@@ -36,7 +29,10 @@ const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
 const GraphVisualizer = () => {
-	let { IS_WEIGHTED, IS_DIRECTED, ALGORITHM, headings, titles, INITIAL_HISTORY } = getSettings("2");
+	let { IS_WEIGHTED, IS_DIRECTED, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings("3");
+
+	const [headings, setHeadings] = useState(HEADINGS);
+	const [titles, setTitles] = useState(TITLES);
 
 	const [isWeighted, setIsWeighted] = useState(IS_WEIGHTED);
 
@@ -65,7 +61,7 @@ const GraphVisualizer = () => {
 	// History
 	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
 
-	const [selected, setSelected] = useState("2");
+	const [selected, setSelected] = useState("3");
 
 	const [isViewingTable, setIsViewingTable] = useState(false);
 
@@ -78,7 +74,6 @@ const GraphVisualizer = () => {
 			if (algorithmState.value) {
 				const presentNodes = history.present[0];
 				const tables = algorithmState.value;
-
 				let newNodes;
 				if (tables[0].length === 0) {
 					newNodes = [startNode];
@@ -159,16 +154,6 @@ const GraphVisualizer = () => {
 	}, 300); // the more nodes, the smaller the interval #nodes 100/81
 
 	// ======================= editor ======================
-
-	// useEffect(() => {
-	// 	if (isEditing) {
-
-	// 	}
-	// }, [isEditing]);
-
-	// useEffect(() => {
-	// 	console.log("graph", JSON.stringify(graph, null, 2));
-	// }, [graph]);
 
 	const editGraph = () => {
 		resetAll();
@@ -339,18 +324,12 @@ const GraphVisualizer = () => {
 		const { value } = radio.target;
 		if (selected !== value) {
 			setSelected(value);
-			const settings = getSettings(value);
-
-			IS_WEIGHTED = settings.IS_WEIGHTED;
-			IS_DIRECTED = settings.IS_DIRECTED;
-			ALGORITHM = settings.ALGORITHM;
-			headings = settings.headings;
-			titles = settings.titles;
-			INITIAL_HISTORY = settings.INITIAL_HISTORY;
-
+			({ IS_WEIGHTED, IS_DIRECTED, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings(value));
 			setIsWeighted(IS_WEIGHTED);
 			setStartNode(INITIAL_START_NODE);
 			setEndNode(INITIAL_END_NODE);
+			setTitles(TITLES);
+			setHeadings(HEADINGS);
 			setIsPlaying(false);
 			setVisitedNodes(history.present[0]);
 			setPath({ path: [], drawPath: false });
@@ -365,7 +344,10 @@ const GraphVisualizer = () => {
 
 	return (
 		<div className="wrapper">
-			<SelectBox handleClick={handleClick} items={["Depth First Search", "Dijkstras Algorithm"]} />
+			<SelectBox
+				handleClick={handleClick}
+				items={["Depth First Search", "Dijkstras Algorithm", "Breadth First Search"]}
+			/>
 			<div className="content">
 				<div className="window-container">
 					<div id="table-window" className="window table-window">
