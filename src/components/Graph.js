@@ -125,6 +125,12 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 			}
 		},
 		{
+			selector: "edge[weight = 0]",
+			style: {
+				label: "0"
+			}
+		},
+		{
 			selector: "edge[?isDirected]",
 			style: {
 				"curve-style": "bezier",

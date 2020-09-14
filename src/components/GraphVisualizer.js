@@ -22,14 +22,14 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../settings/graph-algorithm-settings";
 
-const ROWS = 5;
-const COLUMNS = 5;
+const ROWS = 3;
+const COLUMNS = 3;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
 const GraphVisualizer = () => {
-	let { IS_WEIGHTED, IS_DIRECTED, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings("3");
+	let { IS_WEIGHTED, IS_DIRECTED, ALLOWS_NEGATIVE, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings("4");
 
 	const [headings, setHeadings] = useState(HEADINGS);
 	const [titles, setTitles] = useState(TITLES);
@@ -37,7 +37,7 @@ const GraphVisualizer = () => {
 	const [isWeighted, setIsWeighted] = useState(IS_WEIGHTED);
 
 	// Graph model
-	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ROWS, COLUMNS);
+	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ALLOWS_NEGATIVE, ROWS, COLUMNS);
 	const [graph, setGraph] = useState(initialGraph);
 
 	const [startNode, setStartNode] = useState(INITIAL_START_NODE);
@@ -61,7 +61,7 @@ const GraphVisualizer = () => {
 	// History
 	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
 
-	const [selected, setSelected] = useState("3");
+	const [selected, setSelected] = useState("4");
 
 	const [isViewingTable, setIsViewingTable] = useState(false);
 
@@ -324,7 +324,9 @@ const GraphVisualizer = () => {
 		const { value } = radio.target;
 		if (selected !== value) {
 			setSelected(value);
-			({ IS_WEIGHTED, IS_DIRECTED, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings(value));
+			({ IS_WEIGHTED, IS_DIRECTED, ALLOWS_NEGATIVE, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings(
+				value
+			));
 			setIsWeighted(IS_WEIGHTED);
 			setStartNode(INITIAL_START_NODE);
 			setEndNode(INITIAL_END_NODE);
@@ -346,7 +348,7 @@ const GraphVisualizer = () => {
 		<div className="wrapper">
 			<SelectBox
 				handleClick={handleClick}
-				items={["Depth First Search", "Dijkstras Algorithm", "Breadth First Search"]}
+				items={["Depth First Search", "Dijkstras Algorithm", "Breadth First Search", "Bellman Ford"]}
 			/>
 			<div className="content">
 				<div className="window-container">

@@ -1,5 +1,10 @@
 const generateRandomNumber = (min = 1, max = 10) => Math.floor(Math.random() * (max - min + 1) + min);
 
+const generateRandomUnboundedNumber = (min = -5, max = 20) => {
+	const val = Math.floor(Math.random() * (max - min + 1) + min);
+	return val;
+};
+
 const graphToEdgeList = (graphList) => {
 	const edges = [];
 	const nodes = [];
@@ -31,7 +36,7 @@ const filterGraph = (graph) => {
 	return [...nodes, ...uniqueEdges];
 };
 
-const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {
+const generateRandomGraph = (isDirected, isWeighted, allowsNegative, rows, columns) => {
 	const graph = [];
 
 	for (let i = 0; i < rows; i += 1) {
@@ -66,7 +71,7 @@ const generateRandomGraph = (isDirected, isWeighted, rows, columns) => {
 								label: nodeId,
 								source: nodeId,
 								target: neighborId,
-								weight: generateRandomNumber(),
+								weight: allowsNegative ? generateRandomUnboundedNumber() : generateRandomNumber(),
 								isDirected
 							}
 						};

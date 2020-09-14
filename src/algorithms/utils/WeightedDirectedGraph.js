@@ -32,7 +32,10 @@ class WeightedDirectedGraph extends UnweightedDirectedGraph {
 				cost
 			});
 		} else {
-			this.nodes.push(node);
+			if (!this.nodes.includes(node)) {
+				this.nodes.push(node);
+			}
+
 			this.adjacencyList[node] = [
 				{
 					node: neighbor,
@@ -43,6 +46,16 @@ class WeightedDirectedGraph extends UnweightedDirectedGraph {
 				this.nodes.push(neighbor);
 			}
 		}
+	};
+
+	getEdges = () => {
+		const edges = [];
+		Object.keys(this.adjacencyList).forEach((node) => {
+			this.adjacencyList[node].forEach((neighbor) => {
+				edges.push({ from: node, to: neighbor.node, cost: neighbor.cost });
+			});
+		});
+		return edges;
 	};
 }
 
