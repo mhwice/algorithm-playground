@@ -5,7 +5,7 @@ import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
 import SelectBox from "./SelectBox";
 import SortingEditor from "./SortingEditor";
-import SortingAlgorithmManager from "../algorithms/SortingAlgorithmManager";
+import SortingAlgorithmManager from "../algorithms-and-data-structures/SortingAlgorithmManager";
 
 const getSettings = (val) => {
 	switch (val) {
@@ -36,11 +36,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 	const [history, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }] = useHistory([
 		INITIAL_HISTORY
 	]);
-
-	// const dummyStep = () => {
-	// 	const result = algorithmProcess.next();
-	// 	console.log("result", JSON.stringify(result, null, 2));
-	// };
 
 	const takeStep = () => {
 		const result = algorithmProcess.next();

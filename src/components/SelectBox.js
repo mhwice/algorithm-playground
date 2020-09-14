@@ -2,12 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-/*
-
-	items = ["Breadth First Search", "Depth First Search", "Dijkstras Algorithm"]
-
-*/
-
 const SelectBox = ({ items, handleClick }) => {
 	return (
 		<div className="select-box">

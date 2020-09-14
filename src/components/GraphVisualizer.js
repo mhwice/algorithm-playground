@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import $ from "jquery";
-import AlgorithmManager from "../algorithms/AlgorithmManager";
+import PathfindingAlgorithmManager from "../algorithms-and-data-structures/PathfindingAlgorithmManager";
 import Graph from "./Graph";
 import Table from "./Table";
 import Editor from "./Editor";
@@ -28,23 +28,23 @@ const COLUMNS = 3;
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
+const INITIAL_ALGORITHM = "4";
+
 const GraphVisualizer = () => {
-	let { IS_WEIGHTED, IS_DIRECTED, ALLOWS_NEGATIVE, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings("4");
+	const initialSettings = getSettings(INITIAL_ALGORITHM);
 
-	const [headings, setHeadings] = useState(HEADINGS);
-	const [titles, setTitles] = useState(TITLES);
-
-	const [isWeighted, setIsWeighted] = useState(IS_WEIGHTED);
+	const [settings, setSettings] = useState(initialSettings);
 
 	// Graph model
-	const initialGraph = () => generateRandomGraph(IS_DIRECTED, IS_WEIGHTED, ALLOWS_NEGATIVE, ROWS, COLUMNS);
+	const initialGraph = () =>
+		generateRandomGraph(settings.IS_DIRECTED, settings.IS_WEIGHTED, settings.ALLOWS_NEGATIVE, ROWS, COLUMNS);
 	const [graph, setGraph] = useState(initialGraph);
 
 	const [startNode, setStartNode] = useState(INITIAL_START_NODE);
 	const [endNode, setEndNode] = useState(INITIAL_END_NODE);
 
 	// Algorithm generator
-	const initialAlgorithmResults = () => new AlgorithmManager(ALGORITHM, graph, startNode, endNode);
+	const initialAlgorithmResults = () => new PathfindingAlgorithmManager(settings.ALGORITHM, graph, startNode, endNode);
 	const [algorithmGenerator, setAlgorithmGenerator] = useState(initialAlgorithmResults);
 
 	// Shortest path
@@ -59,9 +59,11 @@ const GraphVisualizer = () => {
 	const [visitedNodes, setVisitedNodes] = useState([]);
 
 	// History
-	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(INITIAL_HISTORY);
+	const [history, { redoHistory, undoHistory, canRedoHistory, setHistory, resetHistory }] = useHistory(
+		settings.INITIAL_HISTORY
+	);
 
-	const [selected, setSelected] = useState("4");
+	const [selected, setSelected] = useState(INITIAL_ALGORITHM);
 
 	const [isViewingTable, setIsViewingTable] = useState(false);
 
@@ -124,7 +126,7 @@ const GraphVisualizer = () => {
 		setVisitedNodes(history.present[0]);
 		setPath({ path: [], drawPath: false });
 		setAlgorithmGenerator(initialAlgorithmResults);
-		resetHistory(INITIAL_HISTORY);
+		resetHistory(settings.INITIAL_HISTORY);
 	};
 
 	// Moves backwards one step
@@ -184,7 +186,7 @@ const GraphVisualizer = () => {
 		}
 
 		setGraph(newGraph);
-		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
+		setAlgorithmGenerator(new PathfindingAlgorithmManager(settings.ALGORITHM, newGraph, startNode, endNode));
 	};
 
 	const addEdgeCallback = (fromNode = "A", toNode = "B") => {
@@ -196,9 +198,9 @@ const GraphVisualizer = () => {
 			if (!isNodeInGraph(newGraph, toNode)) {
 				newGraph.push(createNode(toNode, false, false));
 			}
-			newGraph.push(createEdge(fromNode, toNode, 0, IS_DIRECTED, IS_WEIGHTED));
+			newGraph.push(createEdge(fromNode, toNode, 0, settings.IS_DIRECTED, settings.IS_WEIGHTED));
 			setGraph(newGraph);
-			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
+			setAlgorithmGenerator(new PathfindingAlgorithmManager(settings.ALGORITHM, newGraph, startNode, endNode));
 		}
 	};
 
@@ -213,7 +215,7 @@ const GraphVisualizer = () => {
 					return;
 				}
 
-				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), settings.IS_DIRECTED, settings.IS_WEIGHTED);
 
 				if (!isNodeUsed(newGraph, source) && source !== startNode && source !== endNode) {
 					newGraph = removeNode(newGraph, source);
@@ -235,7 +237,7 @@ const GraphVisualizer = () => {
 					return;
 				}
 
-				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), settings.IS_DIRECTED, settings.IS_WEIGHTED);
 
 				if (!isNodeUsed(newGraph, source) && source !== startNode && source !== endNode) {
 					newGraph = removeNode(newGraph, source);
@@ -253,11 +255,11 @@ const GraphVisualizer = () => {
 			}
 		} else if (oldWeight !== weight) {
 			if (isWeightValid(weight)) {
-				newGraph[id] = createEdge(fromNode, toNode, Number(weight), IS_DIRECTED, IS_WEIGHTED);
+				newGraph[id] = createEdge(fromNode, toNode, Number(weight), settings.IS_DIRECTED, settings.IS_WEIGHTED);
 				setGraph(newGraph);
 			}
 		}
-		setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, endNode));
+		setAlgorithmGenerator(new PathfindingAlgorithmManager(settings.ALGORITHM, newGraph, startNode, endNode));
 	};
 
 	const updateStartNode = (id) => {
@@ -285,7 +287,7 @@ const GraphVisualizer = () => {
 			// Update graph
 			setGraph(newGraph);
 			setStartNode(node.data.id);
-			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, node.data.id, endNode));
+			setAlgorithmGenerator(new PathfindingAlgorithmManager(settings.ALGORITHM, newGraph, node.data.id, endNode));
 		}
 	};
 
@@ -314,7 +316,7 @@ const GraphVisualizer = () => {
 			// Update graph
 			setGraph(newGraph);
 			setEndNode(node.data.id);
-			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, startNode, node.data.id));
+			setAlgorithmGenerator(new PathfindingAlgorithmManager(settings.ALGORITHM, newGraph, startNode, node.data.id));
 		}
 	};
 
@@ -324,20 +326,24 @@ const GraphVisualizer = () => {
 		const { value } = radio.target;
 		if (selected !== value) {
 			setSelected(value);
-			({ IS_WEIGHTED, IS_DIRECTED, ALLOWS_NEGATIVE, ALGORITHM, HEADINGS, TITLES, INITIAL_HISTORY } = getSettings(
-				value
-			));
-			setIsWeighted(IS_WEIGHTED);
+			const newSettings = getSettings(value);
+			setSettings(newSettings);
 			setStartNode(INITIAL_START_NODE);
 			setEndNode(INITIAL_END_NODE);
-			setTitles(TITLES);
-			setHeadings(HEADINGS);
 			setIsPlaying(false);
 			setVisitedNodes(history.present[0]);
 			setPath({ path: [], drawPath: false });
-			resetHistory(INITIAL_HISTORY);
-			const newGraph = initialGraph();
-			setAlgorithmGenerator(new AlgorithmManager(ALGORITHM, newGraph, INITIAL_START_NODE, INITIAL_END_NODE));
+			resetHistory(newSettings.INITIAL_HISTORY);
+			const newGraph = generateRandomGraph(
+				newSettings.IS_DIRECTED,
+				newSettings.IS_WEIGHTED,
+				newSettings.ALLOWS_NEGATIVE,
+				ROWS,
+				COLUMNS
+			);
+			setAlgorithmGenerator(
+				new PathfindingAlgorithmManager(newSettings.ALGORITHM, newGraph, INITIAL_START_NODE, INITIAL_END_NODE)
+			);
 			setGraph(newGraph);
 		}
 	};
@@ -361,12 +367,12 @@ const GraphVisualizer = () => {
 								updateEdge={updateEdgeCallback}
 								updateStartNode={updateStartNode}
 								updateEndNode={updateEndNode}
-								isWeighted={isWeighted}
+								isWeighted={settings.IS_WEIGHTED}
 							/>
 						) : (
 							<>
 								{history.present.slice(1).map((data, idx) => {
-									return <Table key={idx} title={titles[idx]} headings={headings[idx]} data={data} />;
+									return <Table key={idx} title={settings.TITLES[idx]} headings={settings.HEADINGS[idx]} data={data} />;
 								})}
 							</>
 						)}
