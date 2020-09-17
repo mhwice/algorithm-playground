@@ -6,7 +6,7 @@ import cola from "cytoscape-cola";
 
 cytoscape.use(cola);
 
-const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
+const Graph = ({ rows, graph: elements, path, visitedNodes, animationCompletionHandler }) => {
 	const [cyRef, setCyRef] = useState({});
 
 	useEffect(() => {
@@ -51,7 +51,7 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 	useEffect(() => {
 		if (path.drawPath) {
 			let i = 0;
-			path.path.forEach((item) => {
+			path.path.forEach((item, itemIndex) => {
 				cyRef
 					.$id(item)
 					.animate(
@@ -66,7 +66,9 @@ const Graph = ({ rows, graph: elements, path, visitedNodes }) => {
 							duration: 100,
 							queue: true,
 							complete() {
-								console.log("Animation complete");
+								if (itemIndex === path.path.length - 1) {
+									animationCompletionHandler();
+								}
 							}
 						}
 					)
@@ -200,7 +202,8 @@ Graph.propTypes = {
 	rows: PropTypes.number,
 	graph: PropTypes.arrayOf(PropTypes.object),
 	path: PropTypes.objectOf(PropTypes.any),
-	visitedNodes: PropTypes.arrayOf(PropTypes.string)
+	visitedNodes: PropTypes.arrayOf(PropTypes.string),
+	animationCompletionHandler: PropTypes.func.isRequired
 };
 
 export default Graph;

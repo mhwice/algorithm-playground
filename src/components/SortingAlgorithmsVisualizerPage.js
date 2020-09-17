@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { generatePercentageArrayWithIndicies } from "../utils/generateRandomArrayWithIndicies";
 import MediaButtons from "./MediaButtons";
 import useHistory from "../hooks/useHistory";
@@ -33,9 +33,18 @@ const SortingAlgorithmsVisualizerPage = () => {
 	const [isPlaying, setIsPlaying] = useState(false);
 	const [isAnimating, setIsAnimating] = useState(false);
 	const [isEditing, setIsEditing] = useState(false);
+	const [disable, setDisable] = useState(false);
 	const [history, { redoHistory, undoHistory, canRedoHistory, canUndoHistory, setHistory, resetHistory }] = useHistory([
 		INITIAL_HISTORY
 	]);
+
+	useEffect(() => {
+		if (isAnimating) {
+			setDisable(true);
+		} else {
+			setDisable(false);
+		}
+	}, [isAnimating]);
 
 	const takeStep = () => {
 		const result = algorithmProcess.next();
@@ -107,12 +116,14 @@ const SortingAlgorithmsVisualizerPage = () => {
 	}, 0);
 
 	const handleClick = (radio) => {
-		const { value } = radio.target;
-		if (value !== selected) {
-			setSelected(value);
-			setAlgorithmProcess(new SortingAlgorithmManager(getSettings(value), bars));
-			algorithmProcess.clear();
-			resetHistory(INITIAL_HISTORY);
+		if (!isAnimating) {
+			const { value } = radio.target;
+			if (value !== selected) {
+				setSelected(value);
+				setAlgorithmProcess(new SortingAlgorithmManager(getSettings(value), bars));
+				algorithmProcess.clear();
+				resetHistory(INITIAL_HISTORY);
+			}
 		}
 	};
 
@@ -157,6 +168,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 	return (
 		<div className="sorting-visualizer-wrapper">
 			<SelectBox
+				disable={disable}
 				handleClick={handleClick}
 				items={["Merge Sort", "Insertion Sort", "Quick Sort", "Bubble Sort", "Selection Sort"]}
 			/>

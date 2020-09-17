@@ -32,8 +32,7 @@ const PathfindingAlgorithmsOverviewPage = () => {
 				<OverviewTable headings={headings} data={data} />
 			</div>
 			<div className="action-button-container">
-				{/* // ! NEED TO ADD CORRECT URL */}
-				<a href="https://github.com/mhwice">
+				<a href="https://github.com/mhwice/algorithm-playground/tree/master/src/algorithms-and-data-structures/algorithms/pathfinding-algorithms">
 					<button className="btn-si btn-github" type="button">
 						View Code on Github
 					</button>

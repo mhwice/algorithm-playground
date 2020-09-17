@@ -6,3 +6,8 @@
   background-color: white;
   outline: none;
 }
+
+.disable {
+  user-select: none;
+  pointer-events: none; 
+}

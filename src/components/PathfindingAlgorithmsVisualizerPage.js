@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import $ from "jquery";
 import PathfindingAlgorithmManager from "../algorithms-and-data-structures/PathfindingAlgorithmManager";
 import Graph from "./Graph";
@@ -67,7 +67,19 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 
 	const [isViewingTable, setIsViewingTable] = useState(false);
 
+	const [isAnimating, setIsAnimating] = useState(false);
+
+	const [disable, setDisable] = useState(false);
+
 	// ================ Steps =============
+
+	useEffect(() => {
+		if (isAnimating) {
+			setDisable(true);
+		} else {
+			setDisable(false);
+		}
+	}, [isAnimating]);
 
 	// Takes one algorithm step
 	const takeStep = () => {
@@ -92,7 +104,10 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 			if (shortestPath) {
 				// make sure a path was found
 				setIsPlaying(false);
-				setPath({ path: shortestPath, drawPath: true });
+				if (shortestPath.length > 0) {
+					setIsAnimating(true);
+					setPath({ path: shortestPath, drawPath: true });
+				}
 			} else {
 				setIsPlaying(false);
 				console.log("path not found");
@@ -122,11 +137,14 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 
 	// Resets everything
 	const resetAll = () => {
-		setIsPlaying(false);
-		setVisitedNodes(history.present[0]);
-		setPath({ path: [], drawPath: false });
-		setAlgorithmGenerator(initialAlgorithmResults);
-		resetHistory(settings.INITIAL_HISTORY);
+		if (!isAnimating) {
+			setIsAnimating(false);
+			setIsPlaying(false);
+			setVisitedNodes(history.present[0]);
+			setPath({ path: [], drawPath: false });
+			setAlgorithmGenerator(initialAlgorithmResults);
+			resetHistory(settings.INITIAL_HISTORY);
+		}
 	};
 
 	// Moves backwards one step
@@ -158,14 +176,16 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 	// ======================= editor ======================
 
 	const editGraph = () => {
-		resetAll();
-		setIsEditing((prev) => !prev);
-		if (!isViewingTable && $("#graph-window").hasClass("graph-window")) {
-			$("#graph-window").toggleClass("graph-window");
-			$("#table-window").toggleClass("table-window");
-		} else if (!$("#graph-window").hasClass("graph-window")) {
-			$("#graph-window").toggleClass("graph-window");
-			$("#table-window").toggleClass("table-window");
+		if (!isAnimating) {
+			resetAll();
+			setIsEditing((prev) => !prev);
+			if (!isViewingTable && $("#graph-window").hasClass("graph-window")) {
+				$("#graph-window").toggleClass("graph-window");
+				$("#table-window").toggleClass("table-window");
+			} else if (!$("#graph-window").hasClass("graph-window")) {
+				$("#graph-window").toggleClass("graph-window");
+				$("#table-window").toggleClass("table-window");
+			}
 		}
 	};
 
@@ -348,11 +368,16 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 		}
 	};
 
+	const animationCompletionHandler = () => {
+		setIsAnimating(false);
+	};
+
 	// ====================== JSX =====================
 
 	return (
 		<div className="wrapper">
 			<SelectBox
+				disable={disable}
 				handleClick={handleClick}
 				items={["Depth First Search", "Dijkstras Algorithm", "Breadth First Search", "Bellman Ford"]}
 			/>
@@ -378,7 +403,14 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 						)}
 					</div>
 					<div id="graph-window" className="window">
-						<Graph rows={ROWS} graph={graph} path={path} visitedNodes={visitedNodes} isEditing={isEditing} />
+						<Graph
+							rows={ROWS}
+							graph={graph}
+							path={path}
+							visitedNodes={visitedNodes}
+							isEditing={isEditing}
+							animationCompletionHandler={animationCompletionHandler}
+						/>
 					</div>
 				</div>
 			</div>

@@ -2,7 +2,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-const SelectBox = ({ items, handleClick }) => {
+const SelectBox = ({ disable, items, handleClick }) => {
 	return (
 		<div className="select-box">
 			<div className="select-box__current" tabIndex="-1">
@@ -28,7 +28,7 @@ const SelectBox = ({ items, handleClick }) => {
 				{items.map((item, itemIndex) => {
 					return (
 						<li key={itemIndex}>
-							<label className="select-box__option" htmlFor={itemIndex}>
+							<label className={disable ? "select-box__option disable" : "select-box__option"} htmlFor={itemIndex}>
 								{item}
 							</label>
 						</li>
@@ -40,6 +40,7 @@ const SelectBox = ({ items, handleClick }) => {
 };
 
 SelectBox.propTypes = {
+	disable: PropTypes.bool.isRequired,
 	handleClick: PropTypes.func.isRequired,
 	items: PropTypes.arrayOf(PropTypes.string).isRequired
 };
