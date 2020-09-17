@@ -1,38 +1,12 @@
 const merge = (leftArray, rightArray) => {
 	const newArray = [];
-
-	const startIndex = leftArray[0][2] < rightArray[0][2] ? leftArray[0][2] : rightArray[0][2];
 	while (leftArray.length > 0 && rightArray.length > 0) {
-		if (leftArray[0][0] < rightArray[0][0]) {
-			const val = leftArray.shift();
-			const positionToInsertAt = startIndex + newArray.length;
-			const numSpaces = positionToInsertAt - val[2];
-			val[2] += numSpaces;
-			newArray.push(val);
+		if (leftArray[0] < rightArray[0]) {
+			newArray.push(leftArray.shift());
 		} else {
-			const val = rightArray.shift();
-			const positionToInsertAt = startIndex + newArray.length;
-			const numSpaces = positionToInsertAt - val[2];
-			val[2] += numSpaces;
-			newArray.push(val);
+			newArray.push(rightArray.shift());
 		}
 	}
-
-	let added = 0;
-	if (leftArray.length === 0) {
-		rightArray.forEach((item) => {
-			const numSpaces = startIndex + newArray.length + added - item[2];
-			item[2] += numSpaces;
-			added += 1;
-		});
-	} else {
-		leftArray.forEach((item) => {
-			const numSpaces = startIndex + newArray.length + added - item[2];
-			item[2] += numSpaces;
-			added += 1;
-		});
-	}
-
 	return leftArray.length === 0 ? newArray.concat(rightArray) : newArray.concat(leftArray);
 };
 
@@ -53,3 +27,7 @@ const mergeSort = (unsortedArray) => {
 };
 
 export { mergeSort as default };
+
+const unsortedArray = [1, 4, 2, 8, 345, 123, 43, 32, 5643, 63, 123, 43, 2, 55, 1, 234, 92]; // [2, 6, 5, 3, 8, 7, 1, 0];
+const sortedArray = mergeSort(unsortedArray);
+console.log(JSON.stringify(sortedArray, null, 2));

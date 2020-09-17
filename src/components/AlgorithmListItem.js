@@ -10,9 +10,9 @@ const AlgorithmListItem = ({ algorithm, description, isDirected, isWeighted }) =
 		</div>
 		<p>{description}</p>
 
-		{/* <button className="btn-si btn-github" type="button">
+		<button className="btn-si btn-github" type="button">
 			View Code on Github
-		</button> */}
+		</button>
 	</div>
 );
 

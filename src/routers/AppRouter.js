@@ -2,17 +2,19 @@ import React from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import HomePage from "../components/HomePage";
 import NotFoundPage from "../components/NotFoundPage";
-import DataStructuresPage from "../components/DataStructuresPage";
+import SortingAlgorithmsOverviewPage from "../components/SortingAlgorithmsOverviewPage";
 import SortingAlgorithmsVisualizerPage from "../components/SortingAlgorithmsVisualizerPage";
-import GraphVisualizer from "../components/GraphVisualizer";
+import PathfindingAlgorithmsVisualizerPage from "../components/PathfindingAlgorithmsVisualizerPage";
+import PathfindingAlgorithmsOverviewPage from "../components/PathfindingAlgorithmsOverviewPage";
 
 const AppRouter = () => (
 	<BrowserRouter>
 		<Switch>
 			<Route path="/" component={HomePage} exact />
-			<Route path="/data-structures" component={DataStructuresPage} />
-			<Route path="/graph-algorithms" component={GraphVisualizer} exact />
-			<Route path="/sorting-algorithms" component={SortingAlgorithmsVisualizerPage} exact />
+			<Route path="/pathfinding-algorithms" component={PathfindingAlgorithmsOverviewPage} exact />
+			<Route path="/pathfinding-algorithms/visualizer" component={PathfindingAlgorithmsVisualizerPage} />
+			<Route path="/sorting-algorithms" component={SortingAlgorithmsOverviewPage} exact />
+			<Route path="/sorting-algorithms/visualizer" component={SortingAlgorithmsVisualizerPage} />
 			<Route component={NotFoundPage} />
 		</Switch>
 	</BrowserRouter>

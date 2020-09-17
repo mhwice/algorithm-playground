@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import $ from "jquery";
 import PathfindingAlgorithmManager from "../algorithms-and-data-structures/PathfindingAlgorithmManager";
 import Graph from "./Graph";
@@ -20,7 +20,7 @@ import {
 } from "../utils/graphManipulation";
 import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
-import getSettings from "../settings/graph-algorithm-settings";
+import getSettings from "../utils/graph-algorithm-settings";
 
 const ROWS = 3;
 const COLUMNS = 3;
@@ -30,7 +30,7 @@ const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
 
 const INITIAL_ALGORITHM = "4";
 
-const GraphVisualizer = () => {
+const PathfindingAlgorithmsVisualizerPage = () => {
 	const initialSettings = getSettings(INITIAL_ALGORITHM);
 
 	const [settings, setSettings] = useState(initialSettings);
@@ -403,4 +403,4 @@ const GraphVisualizer = () => {
 	);
 };
 
-export default GraphVisualizer;
+export default PathfindingAlgorithmsVisualizerPage;

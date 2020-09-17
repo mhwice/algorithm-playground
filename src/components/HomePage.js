@@ -5,8 +5,8 @@ const HomePage = () => {
 	return (
 		<div className="bg">
 			<div className="navigation-container">
-				<Link className="link" to="/graph-algorithms">
-					Graph Algorithms
+				<Link className="link" to="/pathfinding-algorithms">
+					Pathfinding Algorithms
 				</Link>
 				<Link className="link" to="/sorting-algorithms">
 					Sorting Algorithms
@@ -14,7 +14,7 @@ const HomePage = () => {
 			</div>
 			<div className="title-box">
 				<h1 className="title">The Algorithm Playground</h1>
-				<p>A place to visualize and interact with data structures and algorithms</p>
+				<p className="subtitle">A place to visualize and interact with data structures and algorithms</p>
 			</div>
 		</div>
 	);

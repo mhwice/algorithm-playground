@@ -1,0 +1,26 @@
+.btn-pathfinding-algorithm {
+  background-color: #D596FF;
+  background-image: url("../../public/images/graph.svg");
+}
+
+.btn-pathfinding-algorithm:hover {
+  background-color: darken($color: #D596FF, $amount: 5); 
+}
+
+.btn-pathfinding-algorithm:active {
+  background-color: #D596FF; 
+}
+
+.notice {
+  width: 90vw;
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .notice {
+    margin: 10px auto;
+  }
+}

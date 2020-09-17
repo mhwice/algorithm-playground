@@ -103,4 +103,26 @@
   .title {
     font-size: 1em;
   }
+  .title-box {
+    top: 40%;
+  }
 } 
+
+@media (max-height: 400px) {
+
+  .title {
+    font-size: 1em;
+  }
+
+  .title-box {
+    top: 40%;
+  }
+
+  .subtitle {
+    font-size: 10px;
+  }
+
+  .link {
+    font-size: 12px;
+  }
+}
