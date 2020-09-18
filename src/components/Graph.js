@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CytoscapeComponent from "react-cytoscapejs";
-import cytoscape from "cytoscape";
+// import cytoscape from "cytoscape";
 import cola from "cytoscape-cola";
 
-cytoscape.use(cola);
+import("cytoscape").then((cytoscape) => {
+	cytoscape.use(cola);
+});
 
 const Graph = ({ rows, graph: elements, path, visitedNodes, animationCompletionHandler }) => {
 	const [cyRef, setCyRef] = useState({});
