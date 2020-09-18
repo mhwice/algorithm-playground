@@ -59,6 +59,12 @@
   animation-timing-function: ease-in-out;
 }
 
+.subtitle a {
+  color: darken($color: #61bffc, $amount: 40);
+  font-weight: bold;
+  text-decoration: none;
+}
+
 @keyframes slideInFromRight {
   0% {
     opacity: 0;

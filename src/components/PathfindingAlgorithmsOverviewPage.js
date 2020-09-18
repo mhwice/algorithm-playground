@@ -25,8 +25,8 @@ const PathfindingAlgorithmsOverviewPage = () => {
 			<h2 className="overview-title">Pathfinding Algorithms Overview</h2>
 			<p className="notice">
 				* The space and time complexities of pathfinding algorithms are heavily tied to the data structures used in
-				their implementations. Here they have been omitted since the deciding factor in which pathfinding algorithm to
-				use typically relies on the nature of the graph, not the time or space to compute.
+				their implementations. They have been omitted from the table since the deciding factor in which pathfinding
+				algorithm to use typically relies on the nature of the graph, not the time or space to compute.
 			</p>
 			<div className="algorithm-table-container">
 				<OverviewTable headings={headings} data={data} />

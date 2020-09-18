@@ -14,7 +14,10 @@ const HomePage = () => {
 			</div>
 			<div className="title-box">
 				<h1 className="title">The Algorithm Playground</h1>
-				<p className="subtitle">A place to visualize and interact with data structures and algorithms</p>
+				<p className="subtitle">
+					A place to visualize and interact with 9 different pathfinding and sorting algorithms.{" "}
+					<a href="https://github.com/mhwice/algorithm-playground/">Source code available on GitHub.</a>
+				</p>
 			</div>
 		</div>
 	);

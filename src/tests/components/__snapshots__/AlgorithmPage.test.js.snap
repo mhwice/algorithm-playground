@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`should render AlgorithmPage correctly 1`] = `
-<div
-  className="shortest-path-visualizer-container"
->
-  <ShortestPathVisualizer />
-</div>
-`;
