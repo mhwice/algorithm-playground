@@ -22,8 +22,8 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../utils/graph-algorithm-settings";
 
-const ROWS = 3;
-const COLUMNS = 3;
+const ROWS = 2;
+const COLUMNS = 2;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
@@ -361,6 +361,7 @@ const PathfindingAlgorithmsVisualizerPage = () => {
 				ROWS,
 				COLUMNS
 			);
+
 			setAlgorithmGenerator(
 				new PathfindingAlgorithmManager(newSettings.ALGORITHM, newGraph, INITIAL_START_NODE, INITIAL_END_NODE)
 			);
