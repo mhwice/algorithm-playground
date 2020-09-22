@@ -22,8 +22,8 @@ import SelectBox from "./SelectBox";
 import MediaButtons from "./MediaButtons";
 import getSettings from "../utils/graph-algorithm-settings";
 
-const ROWS = 2;
-const COLUMNS = 2;
+const ROWS = 4;
+const COLUMNS = 4;
 
 const INITIAL_START_NODE = "(0, 0)";
 const INITIAL_END_NODE = `(${ROWS - 1}, ${COLUMNS - 1})`;
