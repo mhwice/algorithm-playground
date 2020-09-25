@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { generatePercentageArrayWithIndicies } from "../utils/generateRandomArrayWithIndicies";
+import { generatePercentageArrayWithIndicies, resetArrayIndicies } from "../utils/generateRandomArrayWithIndicies";
 import MediaButtons from "./MediaButtons";
 import useHistory from "../hooks/useHistory";
 import useInterval from "../hooks/useInterval";
@@ -79,6 +79,7 @@ const SortingAlgorithmsVisualizerPage = () => {
 	const resetAll = () => {
 		if (!isAnimating) {
 			algorithmProcess.clear();
+			setBars(resetArrayIndicies(bars));
 			setAlgorithmProcess(initialAlgorithmProcess);
 			resetHistory(INITIAL_HISTORY);
 		}

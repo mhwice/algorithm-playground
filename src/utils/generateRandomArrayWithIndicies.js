@@ -25,4 +25,11 @@ const generatePercentageArrayWithIndicies = () => {
 	return randomArray;
 };
 
-export { generateArrayWithIndicies as default, generatePercentageArrayWithIndicies };
+const resetArrayIndicies = (array) => {
+	for (let i = 0; i < array.length; i += 1) {
+		array[i] = [array[i][0], array[i][1], array[i][1]];
+	}
+	return array;
+};
+
+export { generateArrayWithIndicies as default, generatePercentageArrayWithIndicies, resetArrayIndicies };
