@@ -94,7 +94,6 @@ const SortingAlgorithmsVisualizerPage = () => {
 
 	// Moves forward one step
 	const moveForward = () => {
-		// dummyStep();
 		if (!isAnimating) {
 			setIsAnimating(true);
 			if (canRedoHistory) {
@@ -121,7 +120,8 @@ const SortingAlgorithmsVisualizerPage = () => {
 			const { value } = radio.target;
 			if (value !== selected) {
 				setSelected(value);
-				setAlgorithmProcess(new SortingAlgorithmManager(getSettings(value), bars));
+				setAlgorithmProcess(new SortingAlgorithmManager(getSettings(value), resetArrayIndicies(bars)));
+				setBars(resetArrayIndicies(bars));
 				algorithmProcess.clear();
 				resetHistory(INITIAL_HISTORY);
 			}
