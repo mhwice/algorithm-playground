@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import CytoscapeComponent from "react-cytoscapejs";
+import cytoscape from "cytoscape";
 import cola from "cytoscape-cola";
 
-import("cytoscape").then((cytoscape) => {
-	cytoscape.use(cola);
-});
+cytoscape.use(cola);
 
 const Graph = ({ rows, graph, path, visitedNodes, animationCompletionHandler }) => {
 	const [cyRef, setCyRef] = useState({});
@@ -13,6 +12,8 @@ const Graph = ({ rows, graph, path, visitedNodes, animationCompletionHandler }) 
 	useEffect(() => {
 		try {
 			cyRef.json({ elements: graph });
+			const newLayout = cyRef.layout({ name: "cola", padding: 20 });
+			newLayout.run();
 		} catch (err) {
 			console.log("no problem");
 		}
